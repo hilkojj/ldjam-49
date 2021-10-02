@@ -1,0 +1,100 @@
+/************************************************************************ RESET */
+
+body, html {
+    margin: 0;
+    padding: 0;
+    background-color: #232426;
+    perspective: 214vh;
+}
+
+@keyframes flicker {
+    50% {
+        top: -3px;
+        background: linear-gradient(rgba(18,16,16,0) 50%,rgba(0,0,0,.0) 50%),linear-gradient(90deg,rgba(255,0,0,.1),rgba(0,255,0,.05),rgba(0,0,255,.1),rgba(0,0,0,.2));
+    }
+}
+
+.crt::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    content: " ";
+    display: block;
+    background: linear-gradient(rgba(18,16,16,0) 50%,rgba(0,0,0,.1) 50%),linear-gradient(90deg,rgba(255,0,0,.2),rgba(0,255,0,.05),rgba(0,0,255,.1),rgba(0,0,0,.2));
+    z-index: 2;
+    background-size: 100% 4px,3px 100%;
+    pointer-events: none;
+    filter: contrast(50%);  /* it helps... lower this to 50% for a stronger effect */
+    animation: flicker .04s step-end infinite;
+}
+
+img.crt-screen {
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: calc(50% - 50vh);
+    z-index: 2;
+    pointer-events: none;
+}
+
+img#vignette-and-scratches {
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+.progress-bar {
+    color: #0f4895;
+    font-size: 18px;
+    letter-spacing: -2px;
+    width: 100%;
+}
+
+.not-responding-window {
+    filter: grayscale(1) contrast(.4) brightness(1.3);
+}
+
+.not-responding-window * {
+    pointer-events: none;
+}
+
+/************************************************************************ SCREEN */
+
+#screen {
+    width: 66vh;
+    height: 54vh;
+    position: absolute;
+    top: 12vh;
+    left: calc(50% - 23vh);
+    transform: rotate3d(0.1, 0.1, 0.006, 31deg);
+    background-color: #008080;
+    overflow: hidden;
+    image-rendering: pixelated;
+}
+
+/************************************************************************ TASKBAR */
+.taskbar {
+    position: absolute;
+    bottom: 0;
+    background-color: #c2c2c2;
+    width: 100%;
+    border-top: 2px solid #fff;
+    border-bottom: 2px #c2c2c2;
+    height: calc(23px + 4px + 2px); /* + 4 is for the +2 margin on buttons the +2 px is */
+}
+
+.taskbar .homebutton {
+    background-image: url("img/start-button.png");
+    background-repeat: no-repeat;
+    background-size: 44px;
+    background-position: 13px 4px;
+    padding: 5px;
+    margin-left: 2px;
+    margin-top: 2px;
+}
+
+
+/************************************************************************  */
