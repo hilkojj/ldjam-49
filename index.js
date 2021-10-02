@@ -41,9 +41,37 @@ function makeWindow(windowOptions)
     return div;
 }
 
+function BLUE_SCREEN_OF_DEATH_BABY()
+{
+    let scr = document.getElementById("screen");
+    scr.innerHTML = `
+    
+    <br><br><br>
+    <center><b style="color: white">
+        <h4>
+            <span style="background: white; color: blue; padding: 5px 20px">Unstable system</span>
+            <br><br>
+
+            A FATAL ERROR HAS OCCURED.
+            <br><br>
+            YOU DID NOT MANAGE TO KEEP YOUR COMPUTER STABLE.
+
+            <br><br>
+        </h4>
+        SYS32_NOTFOUND	    &nbsp;&nbsp;&nbsp;&nbsp; 0xC00D07F0L<br>
+        ERR_UNSTABLE        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0xC00D07DCL
+
+        <br><br><br>
+        <span style="background: white; color: blue; padding: 5px 20px">Press <span style="color: darkgrey">F5</span> to reboot.</span>
+    </b></center>
+    
+    `;
+    scr.style.background = "blue"
+}
+
 window.onload = () => {
 
-    const sys32FilesToDelete = 3257;
+    const sys32FilesToDelete = 10;
     let sys32FilesDeleted = 0;
     const maxSquaresInBar = 28;
 
@@ -106,6 +134,10 @@ window.onload = () => {
         let span = document.getElementById("sys32-files-deleted");
         span.innerHTML = ++sys32FilesDeleted;
         let percentage = sys32FilesDeleted / sys32FilesToDelete;
+        if (percentage >= 1)
+        {
+            BLUE_SCREEN_OF_DEATH_BABY() // !!!!!!!!!!! woooo
+        }
         
         document.getElementById("sys32-deleting-progress-bar").value = "▮".repeat((percentage * maxSquaresInBar) | 0 + 1);
     }, 50)

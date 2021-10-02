@@ -73,6 +73,7 @@ img#vignette-and-scratches {
     background-color: #008080;
     overflow: hidden;
     image-rendering: pixelated;
+    font-family: "Pixelated MS Sans Serif",Arial;
 }
 
 /************************************************************************ TASKBAR */
