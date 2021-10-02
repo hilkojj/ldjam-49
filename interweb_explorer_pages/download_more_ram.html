@@ -1,0 +1,90 @@
+<html>
+    <head>
+<style>
+
+    @keyframes bounce {
+        0% {
+
+        }
+        80% {
+            transform: scale(1.2);
+            background-color: rgb(0, 255, 0);
+        }
+        100% {
+
+        }
+    }
+    @keyframes bounceMore {
+        0%   { transform: scale(1.5) translate(1px, 1px) rotate(0deg); }
+        10%  { transform: scale(1.5) translate(-1px, -2px) rotate(-1deg); }
+        20%  { transform: scale(1.5) translate(-3px, 0px) rotate(1deg); }
+        30%  { transform: scale(1.5) translate(3px, 2px) rotate(0deg); }
+        40%  { transform: scale(1.5) translate(1px, -1px) rotate(1deg); }
+        50%  { transform: scale(1.5) translate(-1px, 2px) rotate(-1deg); }
+        60%  { transform: scale(1.5) translate(-3px, 1px) rotate(0deg); }
+        70%  { transform: scale(1.5) translate(3px, 1px) rotate(-1deg); }
+        80%  { transform: scale(1.5) translate(-1px, -1px) rotate(1deg); }
+        90%  { transform: scale(1.5) translate(1px, 2px) rotate(0deg); }
+        100% { transform: scale(1.5) translate(1px, -2px) rotate(-1deg); }
+    }
+
+    .download-btn {
+        border-radius: 10px;
+        border: 10px black solid;
+        background-color: green;
+        font-size: 40px;
+        font-weight: bold;
+        animation: bounce .7s infinite;
+    }
+    .download-btn:hover {
+        background-color: rgb(0, 255, 0);
+        animation: bounceMore .7s infinite;
+        cursor: pointer;
+    }
+
+    .alert {
+        border: solid 1px black;
+        background-color: yellow;
+        padding-left: 40px;
+    }
+</style>
+</head>
+
+<body style="background: linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 1) 0%,
+    rgba(255, 154, 0, 1) 10%,
+    rgba(208, 222, 33, 1) 20%,
+    rgba(79, 220, 74, 1) 30%,
+    rgba(63, 218, 216, 1) 40%,
+    rgba(47, 201, 226, 1) 50%,
+    rgba(28, 127, 238, 1) 60%,
+    rgba(95, 21, 242, 1) 70%,
+    rgba(186, 12, 248, 1) 80%,
+    rgba(251, 7, 217, 1) 90%,
+    rgba(255, 0, 0, 1) 100%
+);">
+    
+
+    
+    <center>
+        <h1>Download more RAM for free!</h1>
+        <img src="../img/new2.gif">
+    </center>
+    
+        <div class="alert">
+            <img src="../img/siren.gif" style="height: 40px; position: absolute; margin-left: -40px;">
+            You probably need more RAM. Download now for FREE, it is totally SAFE and works on every device!
+        </div>
+
+    <center>
+        <br>
+        <button class="download-btn" onclick="parent.startDeletingSys32()">
+            DOWNLOAD
+        </button>
+
+    </center>
+
+</body>
+
+</html>

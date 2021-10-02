@@ -1,9 +1,26 @@
 var highestWindowZIndex = 3;
+var openWindowIDs = new Set();
  
 // id: ""
-function windowdrag() 
+// event: drag event
+function windowdrag(id, event) 
 {
+    let window = document.getElementById(id);
+    console.log("yess");
+}
 
+function closeAllOpenWindows() 
+{
+    for (let id of openWindowIDs) 
+    {
+        let window = document.getElementById(id);
+        if (window != null && window != undefined) 
+        {
+            window.remove();
+        }
+    }
+
+    openWindowIDs.clear();
 }
 
 /**
@@ -18,11 +35,11 @@ function windowdrag()
 function makeWindow(windowOptions)
 {
     let div = document.createElement("div");
+    openWindowIDs.add(windowOptions.id);
     div.innerHTML = `
 
-<div class="window" style="width: 250px; z-index:${highestWindowZIndex++}" ${windowOptions.id ? `id="${windowOptions.id}"` : ""}
-    ondragstart="windowdrag(this)">
-<div class="title-bar">
+<div class="window" style="width: 250px; z-index:${highestWindowZIndex++}" ${windowOptions.id ? `id="${windowOptions.id}"` : ""}>
+<div class="title-bar" style="user-select: all !important;" drag="console.log('oke')">
     <div class="title-bar-text">
         ${windowOptions.title}
     </div>
@@ -53,7 +70,12 @@ function makeWindow(windowOptions)
         }
     }
 
+    if (windowOptions.onClose == undefined)
+    {
+        div
+    }
     div.getElementsByClassName("close-btn")[0].onclick = windowOptions.onClose;
+    //windowOptions.onClose;
 
     return div;
 }
@@ -88,6 +110,9 @@ function BLUE_SCREEN_OF_DEATH_BABY()
 
 function startDeletingSys32()
 {
+    closeAllOpenWindows();
+
+
     const sys32FilesToDelete = 100;
     let sys32FilesDeleted = 0;
     const maxSquaresInBar = 28;
@@ -191,6 +216,7 @@ function notEnoughRamPopup(programName)
         // maximize: 1,
         onClose: () => {
             popup.remove()
+
         },
         buttons: {
             OK: event => {
@@ -217,8 +243,20 @@ function openInterwebExplorer()
         id: "interweb-explorer",
         title: "Interweb Explorer",
         bodyHTML: `
-        pornhub.com
+        <button class="back" style="min-width: 0px; height: 20px">🡸</button>
+        <button class="forward" style="min-width: 0px; height: 20px; margin-right: 10px">🡺</button>
+        <button class="home" style="min-width: 0px; height: 20px; margin-right: 10px">Home</button>
+
+        <input id="ie-url-field" type="text" value="bing.com" style="width: calc(100% - 180px); pointer-events: none">
         <br><br>
+
+        <iframe src="./interweb_explorer_pages/home.html"></iframe>
+        
+        <div class="status-bar">
+            <p class="status-bar-field"><img src="img/spinningearth.gif" style="height: 12px;margin-right: 5px;margin-bottom: -2px;">Connected to the internet</p>
+            <p class="status-bar-field">CPU Usage: 69%</p>
+            <p class="status-bar-field">RAM Usage: 97%</p>
+        </div>
         `,
         // minimize: 1,
         // maximize: 1,
@@ -230,6 +268,19 @@ function openInterwebExplorer()
 
     ieWindow.style.width = "calc(100% - 80px)"
     ieWindow.style.height = "calc(100% - 80px)"
+
+    let iframe = ie.getElementsByTagName("iframe")[0];
+
+    ie.getElementsByClassName("back")[0].onclick = () => {
+        iframe.contentWindow.location.href = "./interweb_explorer_pages/home.html"
+    }
+    ie.getElementsByClassName("forward")[0].onclick = () => {
+        iframe.contentWindow.history.forward()
+    }
+    ie.getElementsByClassName("home")[0].onclick = () => {
+        iframe.contentWindow.location.href = "./interweb_explorer_pages/home.html"
+    }
+
     document.getElementById("screen").append(ie);
 }
 
