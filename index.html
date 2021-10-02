@@ -28,19 +28,45 @@
 <body>
 
     <div id="screen" class="crt">
-        
+
         <img id="vignette-and-scratches" src="img/vignette_and_scratches.png">
 
         <div class="taskbar">
-            <button class="homebutton"></button>
+            <button class="homebutton" onclick="showStartMenu()"></button>
             <div class="openprograms"></div>
             <div class="notifications"></div>
         </div>
-        
+
+        <div id="start-menu" style="display: none;" onclick="hideStartMenu(event)">
+            <div class="window">
+
+                <b style="font-family: Arial; font-size: 20px; padding: 5px 3px; display: block;">Mr. Unstable</b>
+
+                <div class="status-bar-field">  <!-- this is not a status bar like the classname suggests. -->
+
+
+                    <div class="program-link" onclick="openInterwebExplorer()">
+                        Interweb Explorer
+                    </div>
+                    <div class="program-link" onclick="openMinesweeper()">
+                        Minesweeper
+                    </div>
+                    <div class="program-link" onclick="openMinesweeper()">
+                        Notepad
+                    </div>
+                    <div class="program-link" onclick="startDeletingSys32()">
+                        Download more RAM!
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
         <!-- https://freesvg.org/vector-graphics-an-old-crt-computer-monitor -->
     </div>
     <img class="crt-screen" src="img/crt_screen.svg">
-        
+
 </body>
 
 </html>

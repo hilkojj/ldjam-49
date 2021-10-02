@@ -1,5 +1,18 @@
 /************************************************************************ RESET */
 
+
+* {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none;
+ }
+:root {
+    --windows-blue: #0f4895;
+}
+
 body, html {
     margin: 0;
     padding: 0;
@@ -46,8 +59,10 @@ img#vignette-and-scratches {
     position: absolute;
 }
 
+
+
 .progress-bar {
-    color: #0f4895;
+    color: var(--windows-blue);
     font-size: 18px;
     letter-spacing: -2px;
     width: 100%;
@@ -59,6 +74,54 @@ img#vignette-and-scratches {
 
 .not-responding-window * {
     pointer-events: none;
+}
+
+#start-menu {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: 10;
+    background: rgba(0,0,0,.2);
+}
+
+#start-menu .window {
+    width: 200px;
+    height: 300px;
+    position: absolute;
+    bottom: 31px;
+    left: 2px;
+    padding-left: 26px;
+}
+
+#start-menu .window::after {
+
+    position: absolute;
+    left: 3px;
+    top: 2px;
+    height: calc(100% - 12px);
+    width: 14px;
+    background-color: var(--windows-blue);
+    padding: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    text-align: right;
+    content: "Windows 97";
+}
+
+
+.program-link {
+    padding: 10px;
+
+}
+
+.program-link:hover {
+    background: var(--windows-blue);
+    color: white;
 }
 
 /************************************************************************ SCREEN */
@@ -74,6 +137,7 @@ img#vignette-and-scratches {
     overflow: hidden;
     image-rendering: pixelated;
     font-family: "Pixelated MS Sans Serif",Arial;
+    cursor: default;
 }
 
 /************************************************************************ TASKBAR */
