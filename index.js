@@ -1,6 +1,8 @@
 var highestWindowZIndex = 3;
 var openWindowIDs = new Set();
 var currentFocussedTaskbarButton = undefined;
+
+let onClippedWindowClosed = null;
  
 function closeAllOpenWindows() 
 {
@@ -9,6 +11,9 @@ function closeAllOpenWindows()
         let window = document.getElementById(id);
         if (window != null && window != undefined) 
         {
+            if (clippedWindow == window)
+                onClippedWindowClosed();
+
             window.remove();
         }
     }
@@ -36,6 +41,8 @@ function focusWindow(id)
 function closeWindow(id)
 {
     let window = document.getElementById(id);
+    if (clippedWindow == window)
+        onClippedWindowClosed();
     window.remove(); 
 
     let taskbarButton = document.getElementById("taskbarbutton-"+id);
@@ -274,8 +281,8 @@ function startInstallingRam()
                 `,
                 // minimize: 1,
                 // maximize: 1,
-                left: 40,
-                right: 40,
+                left: 30,
+                right: 30,
                 onClose: () => {
                     closeWindow("installing-ram-done")
                 },
@@ -556,6 +563,8 @@ function postStickyNote(text)
     document.getElementsByClassName("perspective")[0].appendChild(note)
 }
 
+let clippedWindow = null;
+
 window.onload = () => {
 
     console.log("Ludum dareee");
@@ -576,28 +585,52 @@ window.onload = () => {
     let clippy = document.getElementsByClassName("clippy")[0];
     let holdingClippy = false;
     const MAX_CLIPPY_TOP = 73;
+    const MIN_CLIPPY_TOP = -20;
+    const MAX_CLIPPY_LEFT = 90;
+    let clippingWindow = null;
     clippy.onmousedown = () => {
         console.log("Holding clippy")
+        clippy.getElementsByClassName("clippy-body")[0].style.backgroundImage = "url('img/clippy/clippy.png')";
         holdingClippy = true;
+        clippedWindow = null;
         clippy.style.transition = "";
+        document.body.classList.add("holding-clippy");
     }
 
     function dropClippy()
     {
         holdingClippy = false;
-        clippy.style.transition = "top .3s ease-in";
-        clippy.style.top = MAX_CLIPPY_TOP + "%";
+        clippy.classList.remove("release-to-clip")
+
+        if (clippingWindow)
+        {
+            clippedWindow = clippingWindow;
+            clippingWindow = null;
+            clippy.getElementsByClassName("clippy-body")[0].style.backgroundImage = "url('img/clippy/clippy-clipped.png')";
+        }
+        else
+        {
+            clippy.style.transition = "top .3s ease-in";
+            clippy.style.top = MAX_CLIPPY_TOP + "%";
+            clippy.getElementsByClassName("clippy-body")[0].style.backgroundImage = "url('img/clippy/clippy.png')";
+        }
+        document.body.classList.remove("holding-clippy");
     }
     function moveClippy(x, y)
     {
         let xper = Number(clippy.style.left.substring(0, clippy.style.left.length - 1)) + x * .16;
         let yper = Number(clippy.style.top.substring(0, clippy.style.top.length - 1)) + y * .16;
 
-        xper = Math.max(0, Math.min(90, xper));
-        yper = Math.max(0, Math.min(MAX_CLIPPY_TOP, yper));
+        xper = Math.max(0, Math.min(MAX_CLIPPY_LEFT, xper));
+        yper = Math.max(MIN_CLIPPY_TOP, Math.min(MAX_CLIPPY_TOP, yper));
 
         clippy.style.left = xper + "%";
         clippy.style.top = yper + "%";
+    }
+
+    onClippedWindowClosed = () => {
+        clippedWindow = null;
+        dropClippy();
     }
 
     document.onmouseup = () => {
@@ -631,7 +664,26 @@ window.onload = () => {
         if (holdingClippy)
         {   // clippy:
             
-            moveClippy(e.movementX, e.movementY);
+            let screenRect = screen.getBoundingClientRect();
+            let mouseX = (e.clientX - screenRect.left) / (screenRect.right - screenRect.left);
+            let mouseY = (e.clientY - screenRect.top) / (screenRect.bottom - screenRect.top);
+            let xper = Math.max(0, Math.min(MAX_CLIPPY_LEFT, mouseX * 100 - 5));
+            let yper = Math.max(MIN_CLIPPY_TOP, Math.min(MAX_CLIPPY_TOP, mouseY * 100 - 15));
+
+            clippy.style.left = xper + "%";
+            clippy.style.top = yper + "%";
+
+            clippy.classList.remove("release-to-clip")
+            clippingWindow = null;
+            for (let w of document.getElementsByClassName("window"))
+            {
+                if (w.querySelector(":hover") && w.parentElement.id != "start-menu")
+                {
+                    clippy.classList.add("release-to-clip");
+                    clippingWindow = w;
+                    break;
+                }
+            }
         }
 
     }, false);
@@ -671,13 +723,14 @@ window.onload = () => {
             ++impactCounter;
 
             setTimeout(() => {
-                moveClippy(100, 0);
+                if (!clippedWindow)
+                    moveClippy(100, 0);
             }, 100);
 
             for (let id of openWindowIDs) 
             {
                 let window = document.getElementById(id);
-                if (window != null && window != undefined)
+                if (window != null && window != undefined && window != clippedWindow)
                 {
                     window.style.transition = "left ease-out .3s, right ease-out .3s";
                     moveWindowToRight(id, 10);
@@ -686,7 +739,7 @@ window.onload = () => {
 
             setBg();
 
-            if (impactCounter > 1 && Math.random() > .4)
+            if (impactCounter > 1 && Math.random() > .2)
             {
                 glass.innerHTML += `
                     <img src="img/broken_glass.png" class="broken-glass"

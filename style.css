@@ -252,10 +252,10 @@ img.crt-screen {
         transform: translate(5vh, 0) scale(.8, 1.3);
     }
     5% {
-        transform: translate(10vh, 0) scale(1.2, .9) rotate3d(.05, .2, 0, 37deg);
+        transform: translate(10vh, 3) scale(1.2, .9) rotate3d(.05, .2, 0, 37deg);
     }
     7% {
-        transform: translate(20vh, 6vh) rotate3d(.05, .2, 0, 60deg);
+        transform: translate(20vh, 10vh) rotate3d(.05, .2, 0, 60deg);
     }
     15%, 100% {
         transform: translate(63vh, 100vh) rotate3d(.05, .2, 0, 100deg);
@@ -371,15 +371,17 @@ img.crt-screen {
 
 .clippy {
     position: absolute;
-    width: 66px;
     cursor: grabbing;
     z-index: 99999999;
+}
+.holding-clippy .clippy {
+    pointer-events: none;
 }
 
 .clippy .clippy-inner {
     position: relative;
-    height: 100px;
-    width: 66px;
+    height: 11vh;
+    width: 7vh;
 }
 
 .clippy .clippy-inner > * {
@@ -390,8 +392,8 @@ img.crt-screen {
 .clippy .clippy-body {
     position: absolute;
     background-image: url(./img/clippy/clippy.png);
-    height: 100px;
-    width: 66px;
+    height: 11vh;
+    width: 7vh;
 }
 
 @keyframes clippy-brows-anim {
@@ -402,20 +404,38 @@ img.crt-screen {
     88%, 100% { transform: translateY(0); }
 }
 .clippy .clippy-brows {
-    transition: transform 1.0s ease-in-out;
     animation: clippy-brows-anim 3s infinite;
-    margin-top: 10px;
+    margin-top: 2vh;
     position: absolute;
     background-image: url("./img/clippy/clippy-brows.png");
-    height: 100px;
-    width: 55px;
+    height: 11vh;
+    width: 5.5vh;
+}
+@keyframes clippy-eyes-anim {
+    0%, 80% { transform: scaleY(1); }
+    80.5% { transform: scaleY(0); }
+    81% { transform: scaleY(1); }
+    81.5% { transform: scaleY(0); }
+    82%, 100% { transform: scaleY(1); }
 }
 .clippy .clippy-eyes {
-    margin-top: 10px;
+    animation: clippy-eyes-anim 10s infinite;
+    transform-origin: 0% 35%;
+    margin-top: 2vh;
     position: absolute;
     background-image: url("./img/clippy/clippy-eyes.png");
-    height: 100px;
-    width: 55px;
+    height: 4vh;
+    width: 5.5vh;
+}
+
+@keyframes clippy-release-to-clip-anim {
+    0% { transform: scale(.8, 1.1); }
+    50% { transform: scale(1.1, .8); }
+    100% { transform: scale(.8, 1.1); }
+}
+.clippy.release-to-clip {
+    animation: clippy-release-to-clip-anim .5s infinite ease;
+    filter: drop-shadow(0 0 3px rgba(140, 255, 150, .8));
 }
 
 /************************************************************************ TASKBAR */
@@ -569,4 +589,8 @@ img.crt-screen {
         transform: translate(-20vh, -80vh) scale(6);
         opacity: 0;
     }
+}
+
+.holding-clippy .window .window-body {
+    pointer-events: none;
 }
