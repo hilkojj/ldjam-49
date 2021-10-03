@@ -23,51 +23,64 @@
 
     <script src="index.js"></script>
     <link rel="stylesheet" href="style.css">
+
+    <!-- handwriting font: -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
-    <div id="screen" class="crt">
+    <div class="perspective">
 
-        <img id="vignette-and-scratches" src="img/vignette_and_scratches.png">
+        <div id="screen" class="crt">
 
-        <div class="taskbar">
-            <button class="homebutton" onclick="showStartMenu()"></button>
-            <div id="openprograms">
-                <button>interweb...</button>
+            <div id="vignette-and-scratches"></div>
+    
+            <div class="taskbar">
+                <button class="homebutton" onclick="showStartMenu()"></button>
+                <div id="openprograms">
+                </div>
+                <div class="notifications"></div>
             </div>
-            <div class="notifications"></div>
-        </div>
-
-        <div id="start-menu" style="display: none;" onclick="hideStartMenu(event)">
-            <div class="window">
-
-                <b style="font-family: Arial; font-size: 20px; padding: 5px 3px; display: block;">Mr. Unstable</b>
-
-                <div class="status-bar-field">  <!-- this is not a status bar like the classname suggests. -->
-
-
-                    <div class="program-link" onclick="openInterwebExplorer()">
-                        Interweb Explorer
+    
+            <div id="start-menu" style="display: none;" onclick="hideStartMenu(event)">
+                <div class="window">
+    
+                    <b style="font-family: Arial; font-size: 20px; padding: 5px 3px; display: block;">Mr. Unstable</b>
+    
+                    <div class="status-bar-field">  <!-- this is not a status bar like the classname suggests. -->
+    
+    
+                        <div class="program-link" onclick="openInterwebExplorer()">
+                            Interweb Explorer
+                        </div>
+                        <div class="program-link" onclick="openMinesweeper()">
+                            Minesweeper
+                        </div>
+                        <div class="program-link" onclick="openNotepad()">
+                            Notepad
+                        </div>
+                        <div class="program-link" onclick="startTaskManager()">
+                            Task Manager
+                        </div>
+    
+    
                     </div>
-                    <div class="program-link" onclick="openMinesweeper()">
-                        Minesweeper
-                    </div>
-                    <div class="program-link" onclick="openNotepad()">
-                        Notepad
-                    </div>
-                    <div class="program-link" onclick="startTaskManager()">
-                        Task Manager
-                    </div>
-
-
                 </div>
             </div>
+    
+            <!-- https://freesvg.org/vector-graphics-an-old-crt-computer-monitor -->
         </div>
-
-        <!-- https://freesvg.org/vector-graphics-an-old-crt-computer-monitor -->
+        <img class="crt-screen" src="img/crt_screen.svg">
+        <div id="crt-screen-on-button" onclick="toggleOnOff()"></div>
+        <div id="crt-screen-led-indicator"></div>
+        <div id="smash-hitbox"></div>
+    
     </div>
-    <img class="crt-screen" src="img/crt_screen.svg">
+
+    <img id="hand" src="img/hand_pointer.png">
 
 </body>
 

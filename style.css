@@ -1,5 +1,10 @@
 /************************************************************************ RESET */
 
+/* button:not(:disabled):active { */
+button:not(:disabled).active {
+    box-shadow: inset -1px -1px #fff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px grey;
+    padding: 2px 11px 0 13px;
+}
 
 * {
     user-select: none;
@@ -13,6 +18,11 @@ body, html {
     margin: 0;
     padding: 0;
     background-color: #232426;
+    height: 100%;
+    overflow: hidden;
+    cursor: none;
+}
+.perspective {
     perspective: 214vh;
 }
 
@@ -47,15 +57,107 @@ img.crt-screen {
     z-index: 2;
     pointer-events: none;
 }
+#crt-screen-on-button {
+    width: 10vh;
+    height: 11vh;
+    position: absolute;
+    top: 69vh;
+    left: calc(50vw + 31vh);
+    z-index: 99;
+    /* background: rgba(255, 0, 0, 0.61); */
+}
+#crt-screen-led-indicator {
+    width: 2.5vh;
+    height: 2.5vh;
+    position: absolute;
+    top: 73.15vh;
+    left: calc(50vw + 38vh);
+    z-index: 99;
+    pointer-events: none;
+    background: radial-gradient(circle, rgba(255,163,133,1) 18%, rgba(255,127,54,0.4198479813136412) 20%, rgba(137,255,0,0) 69%);
+    animation: standbyled 2s step-end infinite;
+}
 
-img#vignette-and-scratches {
+@keyframes standbyled {
+    0% {
+
+    }
+    60% {
+        background: radial-gradient(circle, rgba(91,91,91,1) 0%, rgba(43,43,43,1) 18%, rgba(255,127,54,0) 20%, rgba(137,255,0,0) 69%);
+    }
+}
+
+.on #crt-screen-led-indicator {
+    background: radial-gradient(circle, rgba(138,255,0,1) 18%, rgba(138,255,0,0.4872637116507198) 20%, rgba(137,255,0,0) 69%);
+    animation: none;
+}
+
+
+#smash-hitbox {
+    width: 25vh;
+    height: 75vh;
+    position: absolute;
+    top: 10vh;
+    left: calc(50vw - 60vh);
+    z-index: 99;
+    /* background: rgba(255, 0, 0, 0.61); */
+}
+
+.sticky-note {
+    width: 14vh;
+    height: 16vh;
+    position: absolute;
+    top: 71vh;
+    left: calc(50vw + -25vh);
+    background-image: url(img/sticky_note.svg);
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 99;
+    padding: 4vh 4.5vh 0 2.2vh;
+    transform: skewY(358deg);
+    font-family: 'Shadows Into Light', cursive;
+    font-size: 2vh;
+    letter-spacing: -.2px;
+    color: #0e3067;
+}
+
+#vignette-and-scratches {
     pointer-events: none;
     width: 100%;
     height: 100%;
     position: absolute;
     z-index: 9999990;
+    background-image: url("img/vignette_and_scratches.png");
+    background-size: cover;
+}
+#vignette-and-scratches::after {
+    height: 50%;
+    width: 100%;
+    position: absolute;
+    content: "";
+    background: url(img/vignette_and_scratches.png), radial-gradient(ellipse at bottom, rgba(58,59,61,1) 0%, rgba(27,27,29,1) 100%);
+    background-size: cover;
+    transition: .1s;
+}
+#vignette-and-scratches::before {
+    height: 50%;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    content: "";
+    background: url(img/vignette_and_scratches.png), radial-gradient(ellipse at top, rgba(58,59,61,1) 0%, rgba(27,27,29,1) 100%);
+    background-size: cover;
+    transition: .1s;
+    background-position-y: bottom;
 }
 
+
+.on #vignette-and-scratches::after {
+    height: 0%;
+}
+.on #vignette-and-scratches::before {
+    height: 0%;
+}
 
 
 .progress-bar {
@@ -78,7 +180,7 @@ img#vignette-and-scratches {
     top: 0;
     bottom: 0;
     width: 100%;
-    z-index: 10;
+    z-index: 9999980;
     background: rgba(0,0,0,.2);
 }
 
@@ -89,7 +191,6 @@ img#vignette-and-scratches {
     bottom: 31px;
     left: 2px;
     padding-left: 26px;
-    z-index: 9999980;
 }
 
 #start-menu .window::after {
@@ -174,5 +275,55 @@ img#vignette-and-scratches {
     float: left;
 }
 
+.taskbar #openprograms * {
+    float: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 
-/************************************************************************  */
+
+/************************************************************************ HAND */
+
+
+#hand {
+    position: fixed;
+    z-index: 9999999;
+    height: 120vh;
+    pointer-events: none;
+    transition: transform 0.3s ease-in-out 0s;
+}
+
+#hand.click {
+    transition: transform 0.025s ease-in-out 0s;
+    transform: rotate3d(1, 0, 0, 10deg);
+}
+
+#hand.gone {
+    transition: transform 1.0s ease-in-out 0s;
+    transform: translate(1000px, 1000px);
+}
+
+@keyframes fistanim {
+    from { transform: rotate(0deg) translateX(1vh) rotate(0deg) rotate(20deg); }
+    50% { transform: rotate(180deg) translateX(2vh) rotate(-180deg) rotate(20deg); }
+    to   { transform: rotate(360deg) translateX(1vh) rotate(-360deg) rotate(20deg); }
+}
+#hand.fist {
+    animation: fistanim 1s linear infinite;
+}
+
+@keyframes smash {
+    /* 0% {
+        transform: rotate(20deg);
+    } */
+    0% {
+        transform: rotate(30deg) translateY(-20vh);
+    }
+    100% {
+        transform: rotate(20deg);
+    }
+}
+#hand.smash {
+    animation: smash .2s;
+    transform: rotate(20deg);
+}

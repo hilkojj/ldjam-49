@@ -1,14 +1,7 @@
 var highestWindowZIndex = 3;
 var openWindowIDs = new Set();
+var currentFocussedTaskbarButton = undefined;
  
-// id: ""
-// event: drag event
-function windowdrag(id, event) 
-{
-    let window = document.getElementById(id);
-    console.log("yess");
-}
-
 function closeAllOpenWindows() 
 {
     for (let id of openWindowIDs) 
@@ -21,6 +14,34 @@ function closeAllOpenWindows()
     }
 
     openWindowIDs.clear();
+
+    document.getElementById("openprograms").innerHTML = "";
+}
+
+function focusWindow(id)
+{   
+    let windowToFocus = document.getElementById(id);
+    windowToFocus.style.zIndex = highestWindowZIndex++;
+
+    if (currentFocussedTaskbarButton != undefined) {
+        currentFocussedTaskbarButton.classList = [];
+    }
+
+    let taskbarButton = document.getElementById("taskbarbutton-"+id);
+    currentFocussedTaskbarButton = taskbarButton;
+
+    taskbarButton.classList = ["active"];
+}
+
+function closeWindow(id)
+{
+    let window = document.getElementById(id);
+    window.remove(); 
+
+    let taskbarButton = document.getElementById("taskbarbutton-"+id);
+    taskbarButton.remove(); 
+
+    openWindowIDs.delete(id);
 }
 
 /**
@@ -29,17 +50,29 @@ function closeAllOpenWindows()
  * bodyHTML: ``,
  * minimize: 1,
  * maximize: 1,
+ * margin: "0px 1px";
  * onClose: () => {},
  * buttons: {}
  */
 function makeWindow(windowOptions)
 {
+    if (openWindowIDs.has(windowOptions.id) || document.getElementById(windowOptions.id) != null) {
+        focusWindow(windowOptions.id)
+        throw "je mag maar een window open hebben"
+    }
+    
+    let taskbar = document.getElementById("openprograms");
+    let taskbarButton = document.createElement("div");
+    taskbarButton.innerHTML = `<button id="taskbarbutton-${windowOptions.id}">${windowOptions.title.substring(0, 10)}...</button>`;
+    taskbarButton.onclick = () => { focusWindow(windowOptions.id); };
+    taskbar.appendChild(taskbarButton);
+
     let div = document.createElement("div");
     openWindowIDs.add(windowOptions.id);
     div.innerHTML = `
 
-<div class="window" style="width: 250px; z-index:${highestWindowZIndex++}" ${windowOptions.id ? `id="${windowOptions.id}"` : ""}>
-<div class="title-bar" style="user-select: all !important;" drag="console.log('oke')">
+<div class="window" style="z-index:${highestWindowZIndex++}; ${windowOptions.margin ? `margin:`+windowOptions.margin : ``};" width="250" ${windowOptions.id ? `id="${windowOptions.id}"` : ""}>
+<div class="title-bar">
     <div class="title-bar-text">
         ${windowOptions.title}
     </div>
@@ -70,8 +103,9 @@ function makeWindow(windowOptions)
         }
     }
 
-    div.getElementsByClassName("close-btn")[0].onclick = (windowOptions.onClose !== undefined)? windowOptions.onClose : () => { div.remove(); openWindowIDs.delete(windowOptions.id); };
+    div.getElementsByClassName("close-btn")[0].onclick = (windowOptions.onClose !== undefined)? windowOptions.onClose : () => { closeWindow(windowOptions.id); };
     
+    setTimeout(() => {focusWindow(windowOptions.id);}, 50); // This is totally because we want a delay and not because our code is trash
 
     return div;
 }
@@ -214,9 +248,10 @@ function notEnoughRamPopup(programName)
         //     popup.remove()
 
         // },
+        margin: "32px",
         buttons: {
             OK: event => {
-                popup.remove()
+                closeWindow("not-enough-ram-window")
             }
         }
     })
@@ -248,7 +283,7 @@ function startTaskManager()
         // },
         buttons: {
             OK: event => {
-                popup.remove()
+                closeWindow("task-manager")
             }
         }
     })
@@ -312,8 +347,72 @@ function openInterwebExplorer()
     document.getElementById("screen").append(ie);
 }
 
+function toggleOnOff()
+{
+    if (document.body.classList.contains("on"))
+        document.body.classList.remove("on")
+    else
+        document.body.classList.add("on")
+
+    let hand = document.getElementById("hand")
+    hand.classList.add("click");
+    setTimeout(() => { hand.classList.remove("click"); }, 50);
+}
+
+function postStickyNote(text)
+{
+    document.body.innerHTML += `
+    <div class="sticky-note">
+        ${text}
+    </div>
+    `
+}
+
 window.onload = () => {
 
     console.log("Ludum dareee");
+
+    postStickyNote("Game objective: play <b><u>minesweeper!</u></b>")
+
+    let hand = document.getElementById("hand");
+    let screen = document.getElementById("screen");
+    let smashHitbox = document.getElementById("smash-hitbox");
+    let handXOffset = 50;
+
+    screen.onmouseenter = () => { hand.classList.add("gone"); };
+    screen.onmouseleave = () => { hand.classList.remove("gone"); };
+
+    document.addEventListener("mousemove", e => {
+        var newX = e.clientX - handXOffset;
+        var newY = e.clientY - 60;
+
+        hand.style.left = newX + "px";
+        hand.style.top = newY + "px";
+    }, false);
+
+    smashHitbox.onmouseenter = () => {
+        hand.src = "img/hand_fist.png"
+
+        hand.classList.remove("fist")
+        setTimeout(() => {
+            hand.classList.add("fist")
+            handXOffset = 380;
     
+            document.onclick = () => {
+                console.log("smash!")
+    
+                hand.classList.add("smash")
+                setTimeout(() => {
+                    hand.classList.remove("smash")
+                }, 200)
+            }
+        }, 10)
+        
+    }
+    smashHitbox.onmouseleave = () => {
+        hand.src = "img/hand_pointer.png"
+        hand.classList.remove("fist")
+        handXOffset = 50;
+        document.onclick = null;
+    }
 }
