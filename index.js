@@ -347,9 +347,14 @@ function openInterwebExplorer()
     document.getElementById("screen").append(ie);
 }
 
+function isOn()
+{
+    return document.body.classList.contains("on");
+}
+
 function toggleOnOff()
 {
-    if (document.body.classList.contains("on"))
+    if (isOn())
         document.body.classList.remove("on")
     else
         document.body.classList.add("on")
@@ -361,7 +366,7 @@ function toggleOnOff()
 
 function postStickyNote(text)
 {
-    document.body.innerHTML += `
+    document.getElementsByClassName("perspective")[0].innerHTML += `
     <div class="sticky-note">
         ${text}
     </div>
@@ -378,6 +383,8 @@ window.onload = () => {
     let screen = document.getElementById("screen");
     let smashHitbox = document.getElementById("smash-hitbox");
     let handXOffset = 50;
+    let perspective = document.getElementsByClassName("perspective")[0];
+    let glass = document.getElementsByClassName("glass")[0];
 
     screen.onmouseenter = () => { hand.classList.add("gone"); };
     screen.onmouseleave = () => { hand.classList.remove("gone"); };
@@ -390,29 +397,101 @@ window.onload = () => {
         hand.style.top = newY + "px";
     }, false);
 
+    let prevResetTimeout = null;
+    let impactCounter = 0;
+    const MAX_IMPACT = 50;
+
+    function setBg()
+    {
+        console.log(impactCounter / MAX_IMPACT)
+        document.getElementsByTagName("html")[0].style.background = `rgb(${impactCounter / MAX_IMPACT * 200}, 10, 30)`
+    }
+    setBg();
+
     smashHitbox.onmouseenter = () => {
         hand.src = "img/hand_fist.png"
+        hand.classList.add("fist")
+        handXOffset = 380;
+        
 
-        hand.classList.remove("fist")
-        setTimeout(() => {
-            hand.classList.add("fist")
-            handXOffset = 380;
-    
-            document.onclick = () => {
-                console.log("smash!")
-    
-                hand.classList.add("smash")
-                setTimeout(() => {
-                    hand.classList.remove("smash")
-                }, 200)
+        document.onclick = () => {
+            if (impactCounter >= MAX_IMPACT)
+                return;
+
+            console.log("smash!")
+
+            var audio = new Audio(Math.random() > .5 ? 'sfx/smash2.mp3' : 'sfx/smash2.mp3');
+            audio.mozPreservesPitch = false;
+            audio.webkitPreservesPitch = false;
+            audio.playbackRate = Math.random() * 1. + .7;
+            audio.play();
+
+            ++impactCounter;
+
+            setBg();
+
+            if (impactCounter > 1 && Math.random() > .5)
+            {
+                glass.innerHTML += `
+                    <img src="img/broken_glass.png" class="broken-glass"
+                        style="transform: translate(${-10 + Math.random() * 70}vh, ${-10 + Math.random() * 70}vh) scale(${1. + (Math.random() - .5) * 1.5}) rotate(${Math.random() * 360}deg)">
+                `
             }
-        }, 10)
+            if (impactCounter > 10 && Math.random() > .8)
+            {
+                console.log("smoke!")
+                let smoke = document.createElement("ul")
+                smoke.classList.add("smoke")
+                smoke.style.left = `calc(50% - ${Math.random() > .5 ? 53 : -31}vh)`;
+                for (var i = 0; i < 4; i++)
+                    smoke.innerHTML += `<li style="animation-delay: ${Math.random() * 3}s"></li>`
+                document.body.append(smoke)
+            }
+            
+            hand.classList.remove("smash")
+            perspective.classList.remove("impact")
+
+            setTimeout(() => {
+
+                if (impactCounter == MAX_IMPACT)
+                {
+                    new Audio('sfx/pc_dead.mp3').play();
+                    smashHitbox.remove()
+                    normalHand()
+                    document.body.classList.add("pc-dead");
+                    if (isOn())
+                        toggleOnOff()
+                    setTimeout(() => {
+                        perspective.remove()
+                    }, 500)
+                }
+                else
+                {
+                    perspective.classList.add("impact")
+                }
+                hand.classList.add("smash")
+                    
+                if (prevResetTimeout)
+                    clearTimeout(prevResetTimeout);
+
+                prevResetTimeout = setTimeout(() => {
+                    hand.classList.remove("smash")
+                    perspective.classList.remove("impact")
+                }, 200)
+
+            }, 10)
+        }
+        
         
     }
-    smashHitbox.onmouseleave = () => {
+    function normalHand()
+    {
         hand.src = "img/hand_pointer.png"
         hand.classList.remove("fist")
         handXOffset = 50;
         document.onclick = null;
+    }
+    smashHitbox.onmouseleave = () => {
+        normalHand()
     }
 }

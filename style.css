@@ -14,16 +14,19 @@ button:not(:disabled).active {
     --windows-blue: #0f4895;
 }
 
+html {
+    background-color: black; /* overridden in js */
+}
 body, html {
     margin: 0;
     padding: 0;
-    background-color: #232426;
     height: 100%;
     overflow: hidden;
     cursor: none;
 }
 .perspective {
     perspective: 214vh;
+    transition: transform .8s;
 }
 
 @keyframes flicker {
@@ -42,7 +45,7 @@ body, html {
     content: " ";
     display: block;
     background: linear-gradient(rgba(18,16,16,0) 50%,rgba(0,0,0,.1) 50%),linear-gradient(90deg,rgba(255,0,0,.2),rgba(0,255,0,.05),rgba(0,0,255,.1),rgba(0,0,0,.2));
-    z-index: 2;
+    z-index: 999999999999;
     background-size: 100% 4px,3px 100%;
     pointer-events: none;
     filter: contrast(50%);  /* it helps... lower this to 50% for a stronger effect */
@@ -94,11 +97,11 @@ img.crt-screen {
 
 
 #smash-hitbox {
-    width: 25vh;
-    height: 75vh;
+    width: 35vh;
+    height: 65vh;
     position: absolute;
-    top: 10vh;
-    left: calc(50vw - 60vh);
+    top: 20vh;
+    left: calc(50vw - 70vh);
     z-index: 99;
     /* background: rgba(255, 0, 0, 0.61); */
 }
@@ -126,7 +129,7 @@ img.crt-screen {
     width: 100%;
     height: 100%;
     position: absolute;
-    z-index: 9999990;
+    z-index: 999999999991;
     background-image: url("img/vignette_and_scratches.png");
     background-size: cover;
 }
@@ -157,6 +160,21 @@ img.crt-screen {
 }
 .on #vignette-and-scratches::before {
     height: 0%;
+}
+
+@keyframes blackimpact {
+    0%, 50% {
+        height: 40%;
+    }
+    51%, 100% {
+        height: 20%;   
+    }
+}
+
+.on .impact #vignette-and-scratches::before {
+    animation: blackimpact .1s linear infinite;
+    transition: 0s;
+    opacity: .3;
 }
 
 
@@ -235,22 +253,91 @@ img.crt-screen {
 
 /************************************************************************ SCREEN */
 
-#screen {
+#screen, .glass {
     width: 66vh;
     height: 54vh;
     position: absolute;
     top: 12vh;
     left: calc(50% - 23vh);
     transform: rotate3d(0.1, 0.1, 0.006, 31deg);
-    background-color: #008080;
     overflow: hidden;
+}
+.glass {
+    z-index: 99999999999999;
+    pointer-events: none;
+}
+#screen {
+    background-color: #008080;
     image-rendering: pixelated;
     font-family: "Pixelated MS Sans Serif",Arial;
     cursor: default;
 }
 
+@keyframes filterimpact {
+    0%, 50% {
+        filter: blur(5px);
+    }
+    51%, 100% {
+        filter: contrast(3);
+    }
+}
+.impact .crt {
+    animation: filterimpact .1s linear infinite;
+}
+
 .window {
     position: absolute;
+}
+
+/************************************************************************ CLIPPY */
+
+.clippy {
+    position: absolute;
+    bottom: 50px;
+    right: 0;
+    width: 100px;
+}
+
+.clippy .clippy-inner {
+    position: relative;
+    height: 100px;
+    width: 100px;
+}
+
+.clippy .clippy-inner > * {
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.clippy .clippy-body {
+    position: absolute;
+    background-image: url(./img/clippy/clippy.png);
+    height: 100px;
+    width: 100px;
+}
+
+@keyframes clippy-brows-anim {
+    0%, 80% { transform: translateY(0); }
+    82% { transform: translateY(-14px); }
+    84% { transform: translateY(0); }
+    86% { transform: translateY(-14px); }
+    88%, 100% { transform: translateY(0); }
+}
+.clippy .clippy-brows {
+    transition: transform 1.0s ease-in-out;
+    animation: clippy-brows-anim 3s infinite;
+    margin-top: 10px;
+    position: absolute;
+    background-image: url("./img/clippy/clippy-brows.png");
+    height: 100px;
+    width: 55px;
+}
+.clippy .clippy-eyes {
+    margin-top: 10px;
+    position: absolute;
+    background-image: url("./img/clippy/clippy-eyes.png");
+    height: 100px;
+    width: 55px;
 }
 
 /************************************************************************ TASKBAR */
@@ -326,4 +413,82 @@ img.crt-screen {
 #hand.smash {
     animation: smash .2s;
     transform: rotate(20deg);
+}
+
+
+
+
+@keyframes shake {
+    0%   { transform: translate(1px, 1px) rotate(0deg); }
+    10%  { transform: translate(-1px, -2px) rotate(-1deg); }
+    20%  { transform: translate(20px, 0px) rotate(1deg); }
+    30%  { transform: translate(-3px, 2px) rotate(0deg); }
+    40%  { transform: translate(1px, -1px) rotate(1deg); }
+    50%  { transform: translate(-1px, 2px) rotate(-1deg); }
+    60%  { transform: translate(-3px, 1px) rotate(0deg); }
+    80%  { transform: translate(3px, 1px) rotate(-1deg); }
+    100%  { transform: translate(1px, 2px) rotate(0deg); }
+}
+
+.impact {
+    animation: shake .4s;
+    transform-origin: 90vh 50vw;
+}
+
+.pc-dead .perspective {
+    transform: translate(300vh, 100vh) rotate(9deg);
+}
+
+.broken-glass {
+    height: 20vh;
+    position: absolute;
+    z-index: 9999900000;
+    pointer-events: none;
+}
+
+
+.smoke {
+    position: absolute;
+    top: 52vh;
+    left: calc(50% - 53vh);
+    pointer-events: none;
+    z-index: -1;
+    opacity: 1;
+    transition: opacity 1s;
+}
+.pc-dead .smoke {
+    opacity: 0;
+}
+.smoke li {
+    position: absolute;
+    list-style: none;
+    width: 10vh;
+    height: 10vh;
+    background: radial-gradient(circle, rgba(91,91,91,1) 0%, rgba(255,127,54,0) 70%);
+}
+.smoke li:nth-child(even) {
+    animation: smokePartEven 2.8s linear infinite;
+}
+.smoke li:nth-child(odd) {
+    animation: smokePartOdd 2.8s linear infinite;
+}
+@keyframes smokePartEven {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(20vh, -80vh) scale(6);
+        opacity: 0;
+    }
+}
+@keyframes smokePartOdd {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-20vh, -80vh) scale(6);
+        opacity: 0;
+    }
 }
