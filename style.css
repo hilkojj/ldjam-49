@@ -476,6 +476,10 @@ img.crt-screen {
     white-space: nowrap;
 }
 
+.taskbar #openprograms * button {
+    margin-top: 1px;
+}
+
 
 /************************************************************************ HAND */
 
@@ -490,7 +494,7 @@ img.crt-screen {
 
 #hand.click {
     transition: transform 0.025s ease-in-out 0s;
-    transform: rotate3d(1, 0, 0, 10deg);
+    transform: rotate3d(1, 0, 0, 15deg);
 }
 
 #hand.gone {

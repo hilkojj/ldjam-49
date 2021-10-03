@@ -443,11 +443,11 @@ function notEnoughRamPopup(programName)
 function openMinesweeper()
 {
 
-    // if (!RAMInstalled)
-    // {
-    //     notEnoughRamPopup("Minesweeper.exe")
-    //     return;
-    // }
+    if (!RAMInstalled)
+    {
+        notEnoughRamPopup("Minesweeper.exe")
+        return;
+    }
     
 
     let boardString = "";
