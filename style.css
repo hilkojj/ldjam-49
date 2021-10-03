@@ -106,6 +106,14 @@ img.crt-screen {
     /* background: rgba(255, 0, 0, 0.61); */
 }
 
+@keyframes stickyanim {
+    0% {
+        transform: scale(2.5) translate(-10vh, 20vh);
+    }
+    100% {
+        transform: skewY(358deg);
+    }
+}
 .sticky-note {
     width: 14vh;
     height: 16vh;
@@ -117,11 +125,11 @@ img.crt-screen {
     background-repeat: no-repeat;
     z-index: 99;
     padding: 4vh 4.5vh 0 2.2vh;
-    transform: skewY(358deg);
     font-family: 'Shadows Into Light', cursive;
     font-size: 2vh;
     letter-spacing: -.2px;
     color: #0e3067;
+    animation: stickyanim .2s ease-out;
 }
 
 #vignette-and-scratches {
@@ -160,6 +168,24 @@ img.crt-screen {
 }
 .on #vignette-and-scratches::before {
     height: 0%;
+}
+
+@keyframes darkfading {
+    0%, 50% {
+        opacity: .2;
+    }
+    80% {
+        opacity: .4;   
+    }
+}
+.on.screen-dark #vignette-and-scratches::after {
+    height: 80%;
+    opacity: .3;
+}
+.on.screen-dark #vignette-and-scratches::before {
+    height: 80%;
+    opacity: .3;
+    animation: darkfading 3s linear infinite;
 }
 
 @keyframes blackimpact {
@@ -283,6 +309,9 @@ img.crt-screen {
 }
 .impact .crt {
     animation: filterimpact .1s linear infinite;
+}
+.on.screen-dark .crt {
+    filter: contrast(4.5) blur(1px);
 }
 
 .window {

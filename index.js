@@ -220,6 +220,15 @@ function showStartMenu()
     let startMenu = document.getElementById("start-menu");
     startMenu.style.display = "block";
 
+    if (fistTimeStart && isOn())
+    {
+        postStickyNote("Whenever the PC is behaving <b><u>unstable</u></b>, just smash it on the side")
+        setTimeout(() => {
+            document.body.classList.add("screen-dark")
+            
+        }, 1000)
+        fistTimeStart = false;
+    }
     
 }
 
@@ -351,6 +360,7 @@ function isOn()
 {
     return document.body.classList.contains("on");
 }
+let fistTimeStart = true;
 
 function toggleOnOff()
 {
@@ -358,26 +368,32 @@ function toggleOnOff()
         document.body.classList.remove("on")
     else
         document.body.classList.add("on")
+        
 
     let hand = document.getElementById("hand")
     hand.classList.add("click");
     setTimeout(() => { hand.classList.remove("click"); }, 50);
 }
 
+let notesPosted = 0;
 function postStickyNote(text)
 {
-    document.getElementsByClassName("perspective")[0].innerHTML += `
-    <div class="sticky-note">
-        ${text}
-    </div>
-    `
+    let note = document.createElement("div")
+    note.className = "sticky-note"
+    note.innerHTML = text;
+    note.style.left = `calc(50vw + ${-28 + notesPosted++ * 16}vh)`
+    note.style.top = `${71 - notesPosted * .6}vh`
+    document.getElementsByClassName("perspective")[0].appendChild(note)
 }
 
 window.onload = () => {
 
     console.log("Ludum dareee");
 
-    postStickyNote("Game objective: play <b><u>minesweeper!</u></b>")
+    setTimeout(() => {
+        postStickyNote("Game objective: <h3 style='margin: 0; font-size: 2.5vh'>play <b><u>minesweeper!</u></b></h3>")
+    }, 1500)
+    
 
     let hand = document.getElementById("hand");
     let screen = document.getElementById("screen");
@@ -396,6 +412,7 @@ window.onload = () => {
         hand.style.left = newX + "px";
         hand.style.top = newY + "px";
     }, false);
+    hand.style.left = "10000px"
 
     let prevResetTimeout = null;
     let impactCounter = 0;
@@ -419,6 +436,8 @@ window.onload = () => {
                 return;
 
             console.log("smash!")
+
+            document.body.classList.remove("screen-dark")
 
             var audio = new Audio(Math.random() > .5 ? 'sfx/smash2.mp3' : 'sfx/smash2.mp3');
             audio.mozPreservesPitch = false;
