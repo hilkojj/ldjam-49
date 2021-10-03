@@ -450,18 +450,25 @@ function openMinesweeper()
         notEnoughRamPopup("Minesweeper.exe")
         return;
     }
-        
+    
+
+    let boardString = "";
+    for (let x=0, y=0, i=0; y < 8; i++, x=i%12, y=Math.floor(i/12))
+    {
+        boardString += `<img onclick="console.log('${x}, ${y}')" src="./img/minesweeper/blank.gif" border="0" alt=""></img>`;
+    }
     
     let ms = makeWindow({
         id: "minesweeper",
         title: "Minesweeper",
         bodyHTML: `
-        <button onclick="gameResult(true, true)">New Game</button>
+        <img src="./img/minesweeper/top.png" border="0" width="100%" alt=""></img>
+        ${boardString}
         <br>
 
         <div class="status-bar">
-            <p class="status-bar-field">High score: not set</p>
-            <p class="status-bar-field">Player: Mr. Unstable</p>
+            <p class="status-bar-field">High score: 0</p>
+            <p class="status-bar-field">P1: Mr. Unstable</p>
         </div>
         `,
         left: 25,
