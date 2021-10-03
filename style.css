@@ -89,6 +89,7 @@ img#vignette-and-scratches {
     bottom: 31px;
     left: 2px;
     padding-left: 26px;
+    z-index: 9999980;
 }
 
 #start-menu .window::after {
@@ -170,6 +171,7 @@ img#vignette-and-scratches {
     padding: 5px;
     margin-left: 2px;
     margin-top: 2px;
+    float: left;
 }
 
 

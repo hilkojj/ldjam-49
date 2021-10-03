@@ -70,12 +70,8 @@ function makeWindow(windowOptions)
         }
     }
 
-    if (windowOptions.onClose == undefined)
-    {
-        div
-    }
-    div.getElementsByClassName("close-btn")[0].onclick = windowOptions.onClose;
-    //windowOptions.onClose;
+    div.getElementsByClassName("close-btn")[0].onclick = (windowOptions.onClose !== undefined)? windowOptions.onClose : () => { div.remove(); openWindowIDs.delete(windowOptions.id); };
+    
 
     return div;
 }
@@ -214,10 +210,10 @@ function notEnoughRamPopup(programName)
         `,
         // minimize: 1,
         // maximize: 1,
-        onClose: () => {
-            popup.remove()
+        // onClose: () => {
+        //     popup.remove()
 
-        },
+        // },
         buttons: {
             OK: event => {
                 popup.remove()
@@ -232,6 +228,38 @@ function openMinesweeper()
 {
 
     notEnoughRamPopup("Minesweeper.exe")
+
+    
+}
+
+function startTaskManager()
+{
+    let popup = makeWindow({
+        id: "task-manager",
+        title: "TaskManager.exe not found",
+        bodyHTML: `
+        <p>Go to the online support page to learn about the problems with your computer.</p>
+        `,
+        // minimize: 1,
+        // maximize: 1,
+        // onClose: () => {
+        //     popup.remove()
+
+        // },
+        buttons: {
+            OK: event => {
+                popup.remove()
+            }
+        }
+    })
+    document.getElementById("screen").append(popup);
+}
+
+
+function openNotepad()
+{
+
+    notEnoughRamPopup("Notepad32.exe")
 
     
 }
@@ -260,9 +288,9 @@ function openInterwebExplorer()
         `,
         // minimize: 1,
         // maximize: 1,
-        onClose: () => {
-            ie.remove()
-        }
+        // onClose: () => {
+        //     ie.remove()
+        // }
     })
     let ieWindow = ie.getElementsByClassName("window")[0];
 
