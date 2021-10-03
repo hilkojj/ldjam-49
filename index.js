@@ -222,7 +222,7 @@ function showStartMenu()
 
     if (fistTimeStart && isOn())
     {
-        postStickyNote("Whenever the PC is behaving <b><u>unstable</u></b>, just smash it on the side")
+        postStickyNote("Whenever the PC is behaving <b><u>unstable</u></b>, smash it on the side")
         setTimeout(() => {
             document.body.classList.add("screen-dark")
             
@@ -361,15 +361,22 @@ function isOn()
     return document.body.classList.contains("on");
 }
 let fistTimeStart = true;
+let onFirstTimeOn = null;
 
 function toggleOnOff()
 {
     if (isOn())
         document.body.classList.remove("on")
     else
+    {
         document.body.classList.add("on")
-        
-
+        if (onFirstTimeOn != null)
+        {
+            onFirstTimeOn();
+            onFirstTimeOn = null;
+        }
+    }
+    
     let hand = document.getElementById("hand")
     hand.classList.add("click");
     setTimeout(() => { hand.classList.remove("click"); }, 50);
@@ -402,15 +409,65 @@ window.onload = () => {
     let perspective = document.getElementsByClassName("perspective")[0];
     let glass = document.getElementsByClassName("glass")[0];
 
+    // CLIPPY:
+    let clippy = document.getElementsByClassName("clippy")[0];
+    let holdingClippy = false;
+    const MAX_CLIPPY_TOP = 73;
+    clippy.onmousedown = () => {
+        console.log("Holding clippy")
+        holdingClippy = true;
+        clippy.style.transition = "";
+    }
+
+    function dropClippy()
+    {
+        holdingClippy = false;
+        clippy.style.transition = "top .3s ease-in";
+        clippy.style.top = MAX_CLIPPY_TOP + "%";
+    }
+
+    document.onmouseup = () => {
+        if (holdingClippy)
+            dropClippy();
+    }
+
     screen.onmouseenter = () => { hand.classList.add("gone"); };
-    screen.onmouseleave = () => { hand.classList.remove("gone"); };
+    screen.onmouseleave = () => {
+        hand.classList.remove("gone");
+        if (holdingClippy)
+            dropClippy();
+    };
+
+    onFirstTimeOn = () => {
+        clippy.style.left = "80%";
+        clippy.style.top = "30%";
+        setTimeout(dropClippy, 100);
+    }
 
     document.addEventListener("mousemove", e => {
-        var newX = e.clientX - handXOffset;
-        var newY = e.clientY - 60;
 
-        hand.style.left = newX + "px";
-        hand.style.top = newY + "px";
+        {   // hand:
+            var newX = e.clientX - handXOffset;
+            var newY = e.clientY - 60;
+    
+            hand.style.left = newX + "px";
+            hand.style.top = newY + "px";
+
+        }
+        if (holdingClippy)
+        {   // clippy:
+            
+            let xper = Number(clippy.style.left.substring(0, clippy.style.left.length - 1)) + e.movementX * .16;
+            let yper = Number(clippy.style.top.substring(0, clippy.style.top.length - 1)) + e.movementY * .16;
+
+            xper = Math.max(0, Math.min(90, xper));
+            yper = Math.max(0, Math.min(MAX_CLIPPY_TOP, yper));
+    
+            clippy.style.left = xper + "%";
+            clippy.style.top = yper + "%";
+
+        }
+
     }, false);
     hand.style.left = "10000px"
 

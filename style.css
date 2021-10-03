@@ -322,15 +322,14 @@ img.crt-screen {
 
 .clippy {
     position: absolute;
-    bottom: 50px;
-    right: 0;
-    width: 100px;
+    width: 66px;
+    cursor: grabbing;
 }
 
 .clippy .clippy-inner {
     position: relative;
     height: 100px;
-    width: 100px;
+    width: 66px;
 }
 
 .clippy .clippy-inner > * {
@@ -342,7 +341,7 @@ img.crt-screen {
     position: absolute;
     background-image: url(./img/clippy/clippy.png);
     height: 100px;
-    width: 100px;
+    width: 66px;
 }
 
 @keyframes clippy-brows-anim {
