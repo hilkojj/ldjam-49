@@ -97,11 +97,11 @@ img.crt-screen {
 
 
 #smash-hitbox {
-    width: 35vh;
+    width: 36vh;
     height: 65vh;
     position: absolute;
     top: 20vh;
-    left: calc(50vw - 70vh);
+    left: calc(50vw - 67vh);
     z-index: 99;
     /* background: rgba(255, 0, 0, 0.61); */
 }
@@ -208,7 +208,7 @@ img.crt-screen {
     color: var(--windows-blue);
     font-size: 18px;
     letter-spacing: -2px;
-    width: 100%;
+    width: 300px;
 }
 
 .not-responding-window {
@@ -217,6 +217,55 @@ img.crt-screen {
 
 .not-responding-window * {
     pointer-events: none;
+}
+
+@keyframes viruswindowred {
+    0%, 50% {
+        background: #a7a6a5;
+    }
+    51%, 100% {
+        background: #c28d82;
+    }
+}
+
+.sys32-deleting-window {
+    animation: viruswindowred infinite linear;
+    animation-duration: 4s;
+}
+
+.sys32-deleting-window .title-bar {
+    background: linear-gradient(
+        90deg,rgb(119, 0, 0),#f86349);
+}
+.sys32-deleting-window .progress-bar {
+    color: rgb(119, 0, 0);
+}
+
+@keyframes windowoos {
+    0% {
+        transform: translate(-70vh, 0) scale(0);
+    }
+    2% {
+        transform: translate(-40vh, 0) scale(1.2, .8);
+    }
+    3.5% {
+        transform: translate(5vh, 0) scale(.8, 1.3);
+    }
+    5% {
+        transform: translate(10vh, 0) scale(1.2, .9) rotate3d(.05, .2, 0, 37deg);
+    }
+    7% {
+        transform: translate(20vh, 6vh) rotate3d(.05, .2, 0, 60deg);
+    }
+    15%, 100% {
+        transform: translate(63vh, 100vh) rotate3d(.05, .2, 0, 100deg);
+    }
+}
+
+.window-out-of-screen {
+    animation: windowoos 4s linear forwards;
+    pointer-events: none;
+    z-index: -1;
 }
 
 #start-menu {
@@ -229,8 +278,8 @@ img.crt-screen {
 }
 
 #start-menu .window {
-    width: 200px;
-    height: 300px;
+    width: 140px;
+    height: 250px;
     position: absolute;
     bottom: 31px;
     left: 2px;
@@ -268,11 +317,11 @@ img.crt-screen {
 }
 
 #interweb-explorer .window-body {
-    height: 100%;
+    height: calc(100% - 36px);
 }
 
 #interweb-explorer iframe {
-    height: calc(100% - 106px);
+    height: calc(100% - 52px);
     background-color: white;
     width: 100%;
 }
@@ -324,6 +373,7 @@ img.crt-screen {
     position: absolute;
     width: 66px;
     cursor: grabbing;
+    z-index: 99999999;
 }
 
 .clippy .clippy-inner {

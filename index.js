@@ -44,21 +44,62 @@ function closeWindow(id)
     openWindowIDs.delete(id);
 }
 
+function setLeftRightOfWindow(id, left, right)
+{
+    let win = document.getElementById(id);
+    win.style.left = left + "%";
+    win.style.right = right + "%";
+}
+
+function moveWindowToRight(id, percentage)
+{
+    let win = document.getElementById(id);
+    newLeft = Number(win.style.left.substr(0, win.style.left.length - 1)) + percentage;
+    
+    if (newLeft >= 100)
+    {
+        let html = win.parentElement.innerHTML;
+        newLeft += 30;
+
+        let winOutOfScreen = document.createElement("div");
+        winOutOfScreen.innerHTML = html;
+        document.body.appendChild(winOutOfScreen);
+        let innerWin = winOutOfScreen.getElementsByClassName("window")[0];
+        innerWin.style.top = win.getBoundingClientRect().top + "px";
+        innerWin.id = "";
+        innerWin.style.zIndex = "";
+        innerWin.style.right = "";
+        innerWin.style.transition = "";
+        innerWin.style.width = win.clientWidth + "px";
+        innerWin.style.height = win.clientHeight + "px";
+        innerWin.classList.add("window-out-of-screen")
+        innerWin.style.left = `calc(50% + 42vh)`;
+
+        setTimeout(() => {
+            closeWindow(id)
+        }, 50);
+        setTimeout(() => {
+            winOutOfScreen.remove();
+        }, 2000)
+        
+    }
+    win.style.left = newLeft + "%";
+    win.style.right = Number(win.style.right.substr(0, win.style.right.length - 1)) - percentage + "%";
+}
+
 /**
  * id: "",
  * title: "",
  * bodyHTML: ``,
  * minimize: 1,
  * maximize: 1,
- * margin: "0px 1px";
  * onClose: () => {},
  * buttons: {}
  */
 function makeWindow(windowOptions)
 {
     if (openWindowIDs.has(windowOptions.id) || document.getElementById(windowOptions.id) != null) {
-        focusWindow(windowOptions.id)
-        throw "je mag maar een window open hebben"
+        closeWindow(windowOptions.id)
     }
     
     let taskbar = document.getElementById("openprograms");
@@ -71,7 +112,7 @@ function makeWindow(windowOptions)
     openWindowIDs.add(windowOptions.id);
     div.innerHTML = `
 
-<div class="window" style="z-index:${highestWindowZIndex++}; ${windowOptions.margin ? `margin:`+windowOptions.margin : ``};" width="250" ${windowOptions.id ? `id="${windowOptions.id}"` : ""}>
+<div class="window" style="z-index:${highestWindowZIndex++}; top: 20%; min-width=250;" ${windowOptions.id ? `id="${windowOptions.id}"` : ""}>
 <div class="title-bar">
     <div class="title-bar-text">
         ${windowOptions.title}
@@ -105,7 +146,13 @@ function makeWindow(windowOptions)
 
     div.getElementsByClassName("close-btn")[0].onclick = (windowOptions.onClose !== undefined)? windowOptions.onClose : () => { closeWindow(windowOptions.id); };
     
-    setTimeout(() => {focusWindow(windowOptions.id);}, 50); // This is totally because we want a delay and not because our code is trash
+    setTimeout(() => {
+        focusWindow(windowOptions.id);
+        setLeftRightOfWindow(windowOptions.id, windowOptions.left || 20, windowOptions.right || 20);
+    
+    }); // This is totally because we want a delay and not because our code is trash
+
+    
 
     return div;
 }
@@ -140,28 +187,134 @@ function BLUE_SCREEN_OF_DEATH_BABY()
 
 function startDeletingSys32()
 {
-    closeAllOpenWindows();
+    setTimeout(() => {
+        let askToStart = makeWindow({
+            id: "start-setup",
+            title: "Download ready",
+            bodyHTML: "The executables from '<u>htpp://downloadmoreRAM.com/</u>' were downloaded successfully.<br>Do you want to run them now?<br><br>",
+            buttons: {
+                Yes: () => {
+                    closeWindow("start-setup");
+                    setTimeout(closeAllOpenWindows, 400);
+                    setTimeout(actuallyStartDeletingSys32, 4000);
+                    setTimeout(startInstallingRam, 2000);
+                },
+                No: () => {
+                    closeWindow("start-setup");
+                }
+            }
+        })
+
+        document.getElementById("screen").append(
+            askToStart
+        )
+    }, 1000)
+
+    
+}
+
+function startInstallingRam()
+{
+    const mbsToInstall = 1024;
+    let mbsInstalled = 0;
+    const maxSquaresInBar = 48;
+
+    let setupWindow = makeWindow({
+        id: "installing-ram",
+        title: "More-Ram-Setup.exe",
+        bodyHTML: `
+        <p>Installing extra RAM, please don't turn off your computer.<br><br>
+        Installed <span id="mbs-installed"></span>MB / ${mbsToInstall}MB.</p>
+        <input class="progress-bar" disabled="" type="text" value="&#9646;&#9646;&#9646;">
+        <br><br>
+        `,
+        // minimize: 1,
+        // maximize: 1,
+        left: 40,
+        right: 4,
+        onClose: () => {
+            closeWindow("installing-ram")
+        },
+        buttons: {
+            Cancel: event => {
+                closeWindow("installing-ram")
+            }
+        }
+    })
+
+    let innerWin = setupWindow.getElementsByClassName("window")[0];
+    innerWin.style.top = "15%";
 
 
-    const sys32FilesToDelete = 100;
+    document.getElementById("screen").append(
+        setupWindow
+    )
+    
+    let interval = setInterval(() => {
+
+
+        let span = document.getElementById("mbs-installed");
+        if (!span)
+        {
+            clearInterval(interval);
+            return;
+        }
+        span.innerHTML = ++mbsInstalled;
+        let percentage = mbsInstalled / mbsToInstall;
+        if (percentage >= 1)
+        {
+            /// !!!! wooooooooooooooooo you can now play minesweepr
+            closeWindow("installing-ram")
+            
+            document.getElementById("screen").append(makeWindow({
+                id: "installing-ram-done",
+                title: "Setup successful!",
+                bodyHTML: `
+                <p>${mbsToInstall}MB of ram was added to your system.<br><br>
+                `,
+                // minimize: 1,
+                // maximize: 1,
+                left: 40,
+                right: 40,
+                onClose: () => {
+                    closeWindow("installing-ram-done")
+                },
+                buttons: {
+                    OK: event => {
+                        closeWindow("installing-ram-done")
+                    }
+                }
+            }))
+        }
+        
+        innerWin.getElementsByClassName("progress-bar")[0].value = "▮".repeat((percentage * maxSquaresInBar) | 0 + 1);
+    }, 44)
+}
+
+function actuallyStartDeletingSys32()
+{
+    const sys32FilesToDelete = 500;
     let sys32FilesDeleted = 0;
-    const maxSquaresInBar = 28;
+    const maxSquaresInBar = 48;
 
     let notResponding = false;
     let timesCancelled = 0;
 
     let removeSys32Window = makeWindow({
         id: "sys32-deleting-window",
-        title: "Deleting C:/System32....",
+        title: "Virus-Setup.exe",
         bodyHTML: `
-        <p>Deleted <span id="sys32-files-deleted"></span>/${sys32FilesToDelete} files.</p>
+        <p>Deleting '<u>C:/System32</u>'.<br><br>
+        Deleted <span id="sys32-files-deleted"></span>/${sys32FilesToDelete} files.</p>
         <input id="sys32-deleting-progress-bar" class="progress-bar" disabled="" type="text" value="&#9646;&#9646;&#9646;">
         <br><br>
         `,
         // minimize: 1,
         // maximize: 1,
+        left: 4,
+        right: 40,
         onClose: () => {
-            removeSys32Window.style.transform = `translate(${Math.random() * 30 - 15}px, ${Math.random() * 30 - 15}px)`
+            removeSys32Window.getElementsByClassName("window")[0].style.transform = `translate(${Math.random() * 30 - 15}px, ${Math.random() * 30 - 15}px)`
         },
         buttons: {
             Cancel: event => {
@@ -178,18 +331,21 @@ function startDeletingSys32()
         }
     })
 
+    let innerWin = removeSys32Window.getElementsByClassName("window")[0];
+    innerWin.style.top = "50%";
+    innerWin.classList.add("sys32-deleting-window")
 
-    function dontRespond(time=2000) {
+    function dontRespond(time=2500) {
         
         notResponding = true;
-        removeSys32Window.classList.add("not-responding-window")
-        let oldTitle = removeSys32Window.getElementsByClassName("title-bar-text")[0].innerHTML;
-        removeSys32Window.getElementsByClassName("title-bar-text")[0].innerHTML = "Not responding";
+        innerWin.classList.add("not-responding-window")
+        let oldTitle = innerWin.getElementsByClassName("title-bar-text")[0].innerHTML;
+        innerWin.getElementsByClassName("title-bar-text")[0].innerHTML = "Not responding";
 
         setTimeout(() => {
             notResponding = false;
-            removeSys32Window.classList.remove("not-responding-window")
-            removeSys32Window.getElementsByClassName("title-bar-text")[0].innerHTML = oldTitle;
+            innerWin.classList.remove("not-responding-window")
+            innerWin.getElementsByClassName("title-bar-text")[0].innerHTML = oldTitle;
         }, time)
     }
 
@@ -198,18 +354,24 @@ function startDeletingSys32()
         removeSys32Window
     )
     
-    setInterval(() => {
+    let interval = setInterval(() => {
 
         if (notResponding)
             return;
 
         let span = document.getElementById("sys32-files-deleted");
+        if (!span)
+        {
+            clearInterval(interval);
+            return;
+        }
         span.innerHTML = ++sys32FilesDeleted;
         let percentage = sys32FilesDeleted / sys32FilesToDelete;
         if (percentage >= 1)
         {
             BLUE_SCREEN_OF_DEATH_BABY() // !!!!!!!!!!! woooo
         }
+        innerWin.style.animationDuration = 4 - 3 * percentage + "s";
         
         document.getElementById("sys32-deleting-progress-bar").value = "▮".repeat((percentage * maxSquaresInBar) | 0 + 1);
     }, 50)
@@ -243,7 +405,7 @@ function hideStartMenu(event)
 function notEnoughRamPopup(programName)
 {
     let popup = makeWindow({
-        id: "not-enough-ram-window",
+        id: programName + "-window",
         title: "Unstable system error",
         bodyHTML: `
         <p>Cannot open '${programName}', not enough RAM available.
@@ -257,10 +419,9 @@ function notEnoughRamPopup(programName)
         //     popup.remove()
 
         // },
-        margin: "32px",
         buttons: {
             OK: event => {
-                closeWindow("not-enough-ram-window")
+                closeWindow(programName + "-window")
             }
         }
     })
@@ -330,6 +491,8 @@ function openInterwebExplorer()
             <p class="status-bar-field">RAM Usage: 97%</p>
         </div>
         `,
+        left: 10,
+        right: 10,
         // minimize: 1,
         // maximize: 1,
         // onClose: () => {
@@ -338,8 +501,8 @@ function openInterwebExplorer()
     })
     let ieWindow = ie.getElementsByClassName("window")[0];
 
-    ieWindow.style.width = "calc(100% - 80px)"
-    ieWindow.style.height = "calc(100% - 80px)"
+    ieWindow.style.height = "calc(100% - 10vh)"
+    ieWindow.style.top = "5%";
 
     let iframe = ie.getElementsByTagName("iframe")[0];
 
@@ -405,7 +568,7 @@ window.onload = () => {
     let hand = document.getElementById("hand");
     let screen = document.getElementById("screen");
     let smashHitbox = document.getElementById("smash-hitbox");
-    let handXOffset = 50;
+    let handXOffset = -1;
     let perspective = document.getElementsByClassName("perspective")[0];
     let glass = document.getElementsByClassName("glass")[0];
 
@@ -425,6 +588,17 @@ window.onload = () => {
         clippy.style.transition = "top .3s ease-in";
         clippy.style.top = MAX_CLIPPY_TOP + "%";
     }
+    function moveClippy(x, y)
+    {
+        let xper = Number(clippy.style.left.substring(0, clippy.style.left.length - 1)) + x * .16;
+        let yper = Number(clippy.style.top.substring(0, clippy.style.top.length - 1)) + y * .16;
+
+        xper = Math.max(0, Math.min(90, xper));
+        yper = Math.max(0, Math.min(MAX_CLIPPY_TOP, yper));
+
+        clippy.style.left = xper + "%";
+        clippy.style.top = yper + "%";
+    }
 
     document.onmouseup = () => {
         if (holdingClippy)
@@ -439,7 +613,7 @@ window.onload = () => {
     };
 
     onFirstTimeOn = () => {
-        clippy.style.left = "80%";
+        clippy.style.left = "60%";
         clippy.style.top = "30%";
         setTimeout(dropClippy, 100);
     }
@@ -447,25 +621,17 @@ window.onload = () => {
     document.addEventListener("mousemove", e => {
 
         {   // hand:
-            var newX = e.clientX - handXOffset;
-            var newY = e.clientY - 60;
+            var newX = e.clientX;   // - handXOffset;
+            var newY = e.clientY;   // - 60;
     
-            hand.style.left = newX + "px";
-            hand.style.top = newY + "px";
+            hand.style.left = `calc(${newX}px - ${handXOffset * .16}vh)`;//  newX + "px";
+            hand.style.top = `calc(${newY}px - 6vh)`;;//  newY + "px";
 
         }
         if (holdingClippy)
         {   // clippy:
             
-            let xper = Number(clippy.style.left.substring(0, clippy.style.left.length - 1)) + e.movementX * .16;
-            let yper = Number(clippy.style.top.substring(0, clippy.style.top.length - 1)) + e.movementY * .16;
-
-            xper = Math.max(0, Math.min(90, xper));
-            yper = Math.max(0, Math.min(MAX_CLIPPY_TOP, yper));
-    
-            clippy.style.left = xper + "%";
-            clippy.style.top = yper + "%";
-
+            moveClippy(e.movementX, e.movementY);
         }
 
     }, false);
@@ -485,7 +651,7 @@ window.onload = () => {
     smashHitbox.onmouseenter = () => {
         hand.src = "img/hand_fist.png"
         hand.classList.add("fist")
-        handXOffset = 380;
+        handXOffset = 300;
         
 
         document.onclick = () => {
@@ -504,9 +670,23 @@ window.onload = () => {
 
             ++impactCounter;
 
+            setTimeout(() => {
+                moveClippy(100, 0);
+            }, 100);
+
+            for (let id of openWindowIDs) 
+            {
+                let window = document.getElementById(id);
+                if (window != null && window != undefined)
+                {
+                    window.style.transition = "left ease-out .3s, right ease-out .3s";
+                    moveWindowToRight(id, 10);
+                }
+            }
+
             setBg();
 
-            if (impactCounter > 1 && Math.random() > .5)
+            if (impactCounter > 1 && Math.random() > .4)
             {
                 glass.innerHTML += `
                     <img src="img/broken_glass.png" class="broken-glass"
@@ -564,10 +744,11 @@ window.onload = () => {
     {
         hand.src = "img/hand_pointer.png"
         hand.classList.remove("fist")
-        handXOffset = 50;
+        handXOffset = 30;
         document.onclick = null;
     }
     smashHitbox.onmouseleave = () => {
         normalHand()
     }
+    normalHand()
 }
