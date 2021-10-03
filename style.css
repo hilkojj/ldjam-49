@@ -604,3 +604,56 @@ img.crt-screen {
 .holding-clippy .window .window-body {
     pointer-events: none;
 }
+
+
+@keyframes appear {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.game-result {
+    color: white;
+    padding: 20px 40px;
+    pointer-events: none;
+}
+
+.game-result h1 {
+    font-weight: bold;
+    margin: 38px 0;
+    animation: appear .1s linear forwards;
+    opacity: 0;
+}
+
+.game-result p {
+    font-family: 'Shadows Into Light';
+    font-size: 24px;
+    animation: appear .1s linear forwards;
+    opacity: 0;
+    animation-delay: 2.5s;
+}
+
+.game-result ul {
+    font-size: 30px;
+    font-family: 'Shadows Into Light';
+    padding: 0;
+    list-style: none;
+    animation: appear .1s linear forwards;
+    opacity: 0;
+    animation-delay: 2s;
+}
+
+.game-result h1:nth-child(even)
+{
+    transform: translateX(50px) rotate(-5deg);
+    transform-origin: left;
+    animation-delay: 1s;
+}
+.game-result h1:nth-child(odd)
+{
+    transform: rotate(5deg);
+    transform-origin: left;
+}

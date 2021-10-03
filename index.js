@@ -190,6 +190,8 @@ function BLUE_SCREEN_OF_DEATH_BABY()
     
     `;
     scr.style.background = "blue"
+
+    gameResult(true, false);
 }
 
 function startDeletingSys32()
@@ -299,7 +301,7 @@ function startInstallingRam()
         }
         
         innerWin.getElementsByClassName("progress-bar")[0].value = "▮".repeat((percentage * maxSquaresInBar) | 0 + 1);
-    }, 32)
+    }, 40)
 }
 
 function actuallyStartDeletingSys32()
@@ -454,7 +456,7 @@ function openMinesweeper()
         id: "minesweeper",
         title: "Minesweeper",
         bodyHTML: `
-        <button>New Game</button>
+        <button onclick="gameResult(true, true)">New Game</button>
         <br>
 
         <div class="status-bar">
@@ -859,6 +861,7 @@ window.onload = () => {
                         toggleOnOff()
                     setTimeout(() => {
                         perspective.remove()
+                        gameResult(false, false);
                     }, 500)
                 }
                 else
@@ -891,4 +894,78 @@ window.onload = () => {
         normalHand()
     }
     normalHand()
+}
+
+function gameResult(playerStable, pcStable)
+{
+    if (document.getElementsByClassName("game-result")[0])
+        document.getElementsByClassName("game-result")[0].remove();
+
+    if (playerStable && pcStable)
+        document.getElementsByTagName("html")[0].style.background = `rgb(54 99 68)`;
+
+    let div = document.createElement("div");
+    div.innerHTML = `
+    <div class="game-result">
+
+        ${playerStable && pcStable ? `
+        
+        <h1>YOU WON</h1>
+        <h1>THE GAME</h1>
+        
+        ` : `
+        
+        <h1>YOU</h1>
+        <h1>FAILED</h1>
+        
+        `}
+        
+        <ul>
+            <li>
+                ${playerStable ? `✅  You were <u><i>stable</i></u>` : `❌  You ARE <b><u><i>UNSTABLE</i></u></b>!!`}
+            </li>
+            <li>
+                ${pcStable ? `✅  The PC is <u><i>stable</i></u>` : `❌  The PC is <b><u><i>UNSTABLE</i></u></b>!!`}
+            </li>
+        </ul>
+
+        <p>
+            ${(playerStable && pcStable) ? `
+            
+            <!-- Both stable -->
+            Good.
+            
+            ` : (playerStable ? `
+            
+            <!-- Only player stable -->
+            
+            You just didn't try hard enough.
+            <br>
+            At least you did not
+            <br>smash the PC to pieces....
+            
+            ` : (pcStable ? `
+            
+            <!-- Only PC stable? -->
+            
+            This scenario should not exist,<br>You probably hacked the game.
+            
+            ` : `
+            
+            <!-- None stable -->
+
+            You've got a real problem dude..
+            <br>
+            Why smash a brand new second hand PC --<i>that potentionally could run Minesweeper</i>-- to pieces?
+            
+            `))}
+        </p>
+        <p>
+            🔄 Press <b>F5</b> to try again, <i>or continue...</i>
+        </p>
+    </div>`
+
+
+
+    document.body.appendChild(div);
 }
