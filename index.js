@@ -220,6 +220,8 @@ function startDeletingSys32()
     
 }
 
+let RAMInstalled = false;
+
 function startInstallingRam()
 {
     const mbsToInstall = 1024;
@@ -272,6 +274,7 @@ function startInstallingRam()
         {
             /// !!!! wooooooooooooooooo you can now play minesweepr
             closeWindow("installing-ram")
+            RAMInstalled = true;
             
             document.getElementById("screen").append(makeWindow({
                 id: "installing-ram-done",
@@ -439,8 +442,35 @@ function notEnoughRamPopup(programName)
 function openMinesweeper()
 {
 
-    notEnoughRamPopup("Minesweeper.exe")
+    if (!RAMInstalled)
+    {
+        notEnoughRamPopup("Minesweeper.exe")
+        return;
+    }
+        
+    
+    let ms = makeWindow({
+        id: "minesweeper",
+        title: "Minesweeper",
+        bodyHTML: `
+        <button>New Game</button>
+        <br>
 
+        <div class="status-bar">
+            <p class="status-bar-field">High score: not set</p>
+            <p class="status-bar-field">Player: Mr. Unstable</p>
+        </div>
+        `,
+        left: 25,
+        right: 25,
+        // minimize: 1,
+        // maximize: 1,
+        // onClose: () => {
+        //     ie.remove()
+        // }
+    })
+    
+    document.getElementById("screen").append(ms);
     
 }
 
@@ -470,9 +500,65 @@ function startTaskManager()
 
 function openNotepad()
 {
+    if (!RAMInstalled)
+    {
+        notEnoughRamPopup("Notepad32.exe")
+        return;
+    }
 
-    notEnoughRamPopup("Notepad32.exe")
+    let np = makeWindow({
+        id: "notepad",
+        title: "Notepad",
+        bodyHTML: `
+        <button>Save</button>
 
+        <br>
+        <textarea style="width: 100%" rows="20">
+DIARY OF MR. UNSTABLE
+
+====== Day 1 =========
+
+Finally got this brand new second hand computer.
+I really have to check out the interwebs,
+and eventually I should try to play Minesweeper..
+
+
+====== Day 2 =========
+
+The screen is just flickering a lot and I'm getting sick of it...
+...I smashed the screen out of frustration, but now it's just getting worse.
+
+Please don't tell my wife
+
+
+====== Day 3 =========
+
+I tried to start Minesweeper.exe, but my PC does not have enough RAM it seems....
+My wife won't let me buy more RAM.....  sigh..
+
+....what if I could DOWNLOAD RAM from the interwebs?
+
+
+====== Day 4 =========
+
+todo.
+</textarea>
+
+        <div class="status-bar">
+            <p class="status-bar-field">C:/Users/Mr.Unstable/Documents/diary.txt</p>
+            <p class="status-bar-field">Nr. of Words: Countless</p>
+        </div>
+        `,
+        left: 10,
+        right: 10,
+        minimize: 1,
+        maximize: 1,
+        // onClose: () => {
+        //     ie.remove()
+        // }
+    })
+    
+    document.getElementById("screen").append(np);
     
 }
 
@@ -500,8 +586,8 @@ function openInterwebExplorer()
         `,
         left: 10,
         right: 10,
-        // minimize: 1,
-        // maximize: 1,
+        minimize: 1,
+        maximize: 1,
         // onClose: () => {
         //     ie.remove()
         // }
