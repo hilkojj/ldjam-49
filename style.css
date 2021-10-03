@@ -307,13 +307,23 @@ img.crt-screen {
 
 
 .program-link {
-    padding: 10px;
+    padding: 7px;
 
 }
 
 .program-link:hover {
     background: var(--windows-blue);
     color: white;
+}
+
+.program-link img {
+    pointer-events: none;
+
+    height: 20px;
+    vertical-align: middle;
+    margin-right: 5px;
+    margin-left: 0px;
+
 }
 
 #interweb-explorer .window-body {

@@ -226,7 +226,7 @@ function startInstallingRam()
 {
     const mbsToInstall = 1024;
     let mbsInstalled = 0;
-    const maxSquaresInBar = 48;
+    const maxSquaresInBar = 38;
 
     let setupWindow = makeWindow({
         id: "installing-ram",
@@ -268,7 +268,8 @@ function startInstallingRam()
             clearInterval(interval);
             return;
         }
-        span.innerHTML = ++mbsInstalled;
+        mbsInstalled += !!document.getElementById("sys32-deleting-window") ? 1 : 3;
+        span.innerHTML = mbsInstalled;
         let percentage = mbsInstalled / mbsToInstall;
         if (percentage >= 1)
         {
@@ -298,14 +299,14 @@ function startInstallingRam()
         }
         
         innerWin.getElementsByClassName("progress-bar")[0].value = "▮".repeat((percentage * maxSquaresInBar) | 0 + 1);
-    }, 44)
+    }, 32)
 }
 
 function actuallyStartDeletingSys32()
 {
     const sys32FilesToDelete = 500;
     let sys32FilesDeleted = 0;
-    const maxSquaresInBar = 48;
+    const maxSquaresInBar = 38;
 
     let notResponding = false;
     let timesCancelled = 0;
