@@ -609,7 +609,7 @@ img.crt-screen {
     }
 }
 
-.holding-clippy .window .window-body {
+.holding-clippy .window iframe {
     pointer-events: none;
 }
 

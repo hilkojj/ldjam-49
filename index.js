@@ -502,6 +502,7 @@ function openMinesweeper()
         //     ie.remove()
         // }
     })
+    ms.style.userSelect = "none";
     document.getElementById("screen").append(ms);
     
 }
@@ -725,6 +726,9 @@ window.onload = () => {
             clippedWindow = clippingWindow;
             clippingWindow = null;
             clippy.getElementsByClassName("clippy-body")[0].style.backgroundImage = "url('img/clippy/clippy-clipped.png')";
+
+            let windowTop = Number(clippedWindow.style.top.substring(0, clippedWindow.style.top.length - 1));
+            clippy.style.top = `calc(${windowTop}% - 6.4vh)`;
         }
         else
         {
