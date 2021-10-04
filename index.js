@@ -119,7 +119,7 @@ function makeWindow(windowOptions)
     openWindowIDs.add(windowOptions.id);
     div.innerHTML = `
 
-<div class="window" style="z-index:${highestWindowZIndex++}; top: 20%; min-width=250;" ${windowOptions.id ? `id="${windowOptions.id}"` : ""}>
+<div class="window" style="z-index:${highestWindowZIndex++}; top: ${windowOptions.top ? `${windowOptions.top}%` : `20%`}; min-width=250;" ${windowOptions.id ? `id="${windowOptions.id}"` : ""}>
 <div class="title-bar">
     <div class="title-bar-text">
         ${windowOptions.title}
@@ -380,6 +380,8 @@ function actuallyStartDeletingSys32()
         }
         span.innerHTML = ++sys32FilesDeleted;
         let percentage = sys32FilesDeleted / sys32FilesToDelete;
+        if (percentage > .8)
+            document.getElementById("smashsticky").style.transform = "rotate(10deg) translate(-1vh, 1.9vh)";
         if (percentage >= 1)
         {
             BLUE_SCREEN_OF_DEATH_BABY() // !!!!!!!!!!! woooo
@@ -397,7 +399,7 @@ function showStartMenu()
 
     if (fistTimeStart && isOn())
     {
-        postStickyNote("Whenever the PC is behaving <b><u>unstable</u></b>, smash it on the side")
+        postStickyNote("Whenever the PC is behaving <b><u>unstable</u></b>, smash it on the side", "smashsticky")
         setTimeout(() => {
             document.body.classList.add("screen-dark")
             
@@ -505,6 +507,109 @@ function openMinesweeper()
     ms.style.userSelect = "none";
     document.getElementById("screen").append(ms);
     
+}
+
+
+function openAbout()
+{
+    document.getElementById("screen").append(makeWindow({
+        id: "about",
+        title: "About",
+        bodyHTML: `
+        
+        <img src="https://win98icons.alexmeub.com/icons/png/computer_explorer_2k-4.png" style="position: absolute">
+
+        <h4 style="margin: 8px 8px 19px 60px;">Unstable98.exe</h5>
+
+        <div style="    overflow-y: auto; height: 250px;">
+
+
+            <p>
+
+                A game made for <b>Ludum Dare 49</b>. Vote and comment <a href="https://ldjam.com/events/ludum-dare/49/$263081" target="_blank">here</a>.
+
+                <br>
+                <fieldset>
+                    <legend>Made by:</legend>
+                    <div class="field-row">
+                        <strong style="color: purple">✨ Hilko Janssen ✨</strong>
+
+                        <button onclick="window.open('https://twitter.com/hilkojj', '_blank').focus()">🐦 @hilkojj</button>
+                        <button onclick="window.open('https://github.com/hilkojj', '_blank').focus()">GitHub</button>
+                    
+                    </div>
+                    <div class="field-row">
+                        <strong style="color: purple">✨ Timo Strating ✨</strong>
+
+                        <button onclick="window.open('https://twitter.com/timostrating', '_blank').focus()">🐦 @timostrating</button>
+                        <button onclick="window.open('https://github.com/timostrating', '_blank').focus()">GitHub</button>
+                    </div>
+                </fieldset>
+
+                <br>
+
+                <fieldset>
+                    <legend>Credits:</legend>
+                    <div class="field-row">
+                        <strong>Broken glass texture </strong>
+                        <a href="https://textures.com/" target="_blank">textures.com</a>
+                    </div>
+                    <div class="field-row">
+                        <strong>Windows icons </strong>
+                        <a href="https://win98icons.alexmeub.com/" target="_blank">win98icons.alexmeub.com</a>
+                    </div>
+                    <div class="field-row">
+                        <strong>Windows 98 CSS library </strong>
+                        <a href="https://jdan.github.io/98.css/" target="_blank">jdan.github.io/98.css</a>
+                    </div>
+                    <div class="field-row">
+                        <strong>Smash sound </strong>
+                        <a href="https://freesound.org/people/InspectorJ/sounds/352204/" target="_blank">InspectorJ</a> - (CC BY 3.0)
+                    </div>
+                    <div class="field-row">
+                        <strong>Monitor image </strong>
+                        <a href="https://freesvg.org/vector-graphics-an-old-crt-computer-monitor" target="_blank">freesvg.org</a>
+                    </div>
+                    
+                </fieldset>
+
+                <br>
+
+                <fieldset>
+                    <legend>Special thanks to:</legend>
+                    <div class="field-row">
+                        Timo, who let me take pictures of his hands.
+                    </div>
+                    <div class="field-row">
+                        The people who made the 4 websites listed in Interweb Explorer. (The actual url might differ from the real url.)
+                    </div>
+                    
+                </fieldset>
+                <br>
+
+
+                <a href="https://github.com/hilkojj/ldjam-49" target="_blank">(Horrible) source code</a>
+
+
+            </p>
+
+
+        </div>
+
+        <div class="status-bar">
+            <p class="status-bar-field">Version: 1.0</p>
+            <p class="status-bar-field">October 2021</p>
+        </div>
+        `,
+        left: 12,
+        right: 25,
+        top: 15,
+        // minimize: 1,
+        // maximize: 1,
+        // onClose: () => {
+        //     ie.remove()
+        // }
+    }));
 }
 
 function startTaskManager()
@@ -672,9 +777,11 @@ function toggleOnOff()
 }
 
 let notesPosted = 0;
-function postStickyNote(text)
+function postStickyNote(text, id)
 {
     let note = document.createElement("div")
+    if (id)
+        note.id = id;
     note.className = "sticky-note"
     note.innerHTML = text;
     note.style.left = `calc(50vw + ${-28 + notesPosted++ * 16}vh)`
@@ -994,8 +1101,13 @@ function gameResult(playerStable, pcStable)
             `))}
         </p>
         <p>
-            🔄 Press <b>F5</b> to try again, <i>or continue...</i>
+            🔄 Press <b>F5</b> to ${playerStable && pcStable ? `play` : `try`} again${playerStable ? `, <i>or continue...</i>` : ``}
+
+
+            <br><br>
+            <img src="img/qrcode_hilkojj.nl.png" style="    height: 22vh; border-radius: 10px;">
         </p>
+
     </div>`
 
 

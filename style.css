@@ -130,6 +130,7 @@ img.crt-screen {
     letter-spacing: -.2px;
     color: #0e3067;
     animation: stickyanim .2s ease-out;
+    transition: transform .1s;
 }
 
 #vignette-and-scratches {
