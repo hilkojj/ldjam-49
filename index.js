@@ -156,8 +156,7 @@ function makeWindow(windowOptions)
     setTimeout(() => {
         focusWindow(windowOptions.id);
         setLeftRightOfWindow(windowOptions.id, windowOptions.left || 20, windowOptions.right || 20);
-    
-    }); // This is totally because we want a delay and not because our code is trash
+    }, 20); // This is totally because we want a delay and not because our code is trash
 
     
 
@@ -441,6 +440,21 @@ function notEnoughRamPopup(programName)
     document.getElementById("screen").append(popup);
 }
 
+let MS_WIDTH = 12;
+let MS_HEIGHT = 8;
+
+function loseMinesweeper(img)
+{
+    img.src = "./img/minesweeper/bombrevealed.gif";
+    for (let n=0; n < 8; n++) 
+    {
+        let x = Math.floor(Math.random() * MS_WIDTH);
+        let y = Math.floor(Math.random() * MS_HEIGHT);
+        let img2 = document.getElementById(`ms-${x}-${y}`);
+        img2.src = "./img/minesweeper/bombrevealed.gif";
+    }
+    gameResult(true, true);
+}
 
 function openMinesweeper()
 {
@@ -453,9 +467,9 @@ function openMinesweeper()
     
 
     let boardString = "";
-    for (let x=0, y=0, i=0; y < 8; i++, x=i%12, y=Math.floor(i/12))
+    for (let x=0, y=0, i=0; y < MS_HEIGHT; i++, x=i%MS_WIDTH, y=Math.floor(i/MS_WIDTH))
     {
-        boardString += `<img onclick="console.log('${x}, ${y}')" src="./img/minesweeper/blank.gif" border="0" alt=""></img>`;
+        boardString += `<img id="ms-${x}-${y}" onclick="loseMinesweeper(this)" src="./img/minesweeper/blank.gif" border="0" alt=""></img>`;
     }
     
     let ms = makeWindow({
@@ -479,7 +493,6 @@ function openMinesweeper()
         //     ie.remove()
         // }
     })
-    
     document.getElementById("screen").append(ms);
     
 }

@@ -377,6 +377,10 @@ img.crt-screen {
     position: absolute;
 }
 
+#minesweeper.window {
+    width: 208px;
+}
+
 /************************************************************************ CLIPPY */
 
 .clippy {
