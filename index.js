@@ -444,6 +444,8 @@ function notEnoughRamPopup(programName)
 let MS_WIDTH = 12;
 let MS_HEIGHT = 8;
 
+let lostMinesweeper = false;
+
 function loseMinesweeper(img)
 {
     img.src = "./img/minesweeper/bombrevealed.gif";
@@ -454,7 +456,11 @@ function loseMinesweeper(img)
         let img2 = document.getElementById(`ms-${x}-${y}`);
         img2.src = "./img/minesweeper/bombrevealed.gif";
     }
-    gameResult(true, true);
+    if (!lostMinesweeper)
+    {
+        gameResult(true, true);
+        lostMinesweeper = true;
+    }
 }
 
 function openMinesweeper()
@@ -477,8 +483,10 @@ function openMinesweeper()
         id: "minesweeper",
         title: "Minesweeper",
         bodyHTML: `
-        <img src="./img/minesweeper/top.png" border="0" width="100%" alt=""></img>
+        <img src="./img/minesweeper/top.png" style="margin-left: 15%; width: 70%; margin-bottom: 4px;"></img>
+        <br>
         ${boardString}
+        <br>
         <br>
 
         <div class="status-bar">
