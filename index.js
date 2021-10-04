@@ -954,7 +954,7 @@ function gameResult(playerStable, pcStable)
             ${(playerStable && pcStable) ? `
             
             <!-- Both stable -->
-            Good....
+            Good.... But you are terrible at minesweeper
             
             ` : (playerStable ? `
             
