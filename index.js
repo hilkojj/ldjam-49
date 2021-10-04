@@ -282,6 +282,7 @@ function startInstallingRam()
                 id: "installing-ram-done",
                 title: "Setup successful!",
                 bodyHTML: `
+                <img src="https://win98icons.alexmeub.com/icons/png/memory-1.png">
                 <p>${mbsToInstall}MB of ram was added to your system.<br><br>
                 `,
                 // minimize: 1,
@@ -953,7 +954,7 @@ function gameResult(playerStable, pcStable)
             ${(playerStable && pcStable) ? `
             
             <!-- Both stable -->
-            Good.
+            Good....
             
             ` : (playerStable ? `
             
