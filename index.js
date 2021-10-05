@@ -227,7 +227,6 @@ function startInstallingRam()
 {
     const mbsToInstall = 1024;
     let mbsInstalled = 0;
-    const maxSquaresInBar = 38;
 
     let setupWindow = makeWindow({
         id: "installing-ram",
@@ -235,7 +234,7 @@ function startInstallingRam()
         bodyHTML: `
         <p>Installing extra RAM, please don't turn off your computer.<br><br>
         Installed <span id="mbs-installed"></span>MB / ${mbsToInstall}MB.</p>
-        <input class="progress-bar" disabled="" type="text" value="&#9646;&#9646;&#9646;">
+        <input class="progress-bar" disabled="" type="text">
         <br><br>
         `,
         // minimize: 1,
@@ -300,7 +299,7 @@ function startInstallingRam()
             }))
         }
         
-        innerWin.getElementsByClassName("progress-bar")[0].value = "▮".repeat((percentage * maxSquaresInBar) | 0 + 1);
+        innerWin.getElementsByClassName("progress-bar")[0].style.background = `linear-gradient(to right, var(--windows-blue) ${percentage * 100}%, transparent ${percentage * 100 + .1}%)`;
     }, 40)
 }
 
@@ -319,7 +318,7 @@ function actuallyStartDeletingSys32()
         bodyHTML: `
         <p>Deleting '<u>C:/System32</u>'.<br><br>
         Deleted <span id="sys32-files-deleted"></span>/${sys32FilesToDelete} files.</p>
-        <input id="sys32-deleting-progress-bar" class="progress-bar" disabled="" type="text" value="&#9646;&#9646;&#9646;">
+        <input id="sys32-deleting-progress-bar" class="progress-bar" disabled="" type="text">
         <br><br>
         `,
         // minimize: 1,
@@ -388,7 +387,7 @@ function actuallyStartDeletingSys32()
         }
         innerWin.style.animationDuration = 4 - 3 * percentage + "s";
         
-        document.getElementById("sys32-deleting-progress-bar").value = "▮".repeat((percentage * maxSquaresInBar) | 0 + 1);
+        document.getElementById("sys32-deleting-progress-bar").style.background = `linear-gradient(to right, var(--windows-blue) ${percentage * 100}%, transparent ${percentage * 100 + .1}%)`;
     }, 50)
 }
 

@@ -206,10 +206,10 @@ img.crt-screen {
 
 
 .progress-bar {
-    color: var(--windows-blue);
+    /* color: var(--windows-blue);
     font-size: 18px;
-    letter-spacing: -2px;
-    width: 300px;
+    letter-spacing: -2px; */
+    width: 100%;
 }
 
 .not-responding-window {
